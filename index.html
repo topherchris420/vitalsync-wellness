@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VitalSync - Local Wellness AI</title>
+    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNTAiIGhlaWdodD0iMjUwIiB2aWV3Qm94PSIwIDAgMjUwIDI1MCIgZmlsbD0ibm9uZSI+PHBhdGggZD0iTTI0OC4xMiwyNDguNzIgTCAxLjU2LDI0OC43MiBMIDEuNTYsMS4yOCBMIDI0OC4xMiwxLjI4IEwgMjQ4LjEyLDI0OC43MiBaIiBmaWxsPSIjRjFGRUZGIi8+PHBhdGggZD0iTTI0Mi4xOSw1Ljg0IEwgOS43Nyw1Ljg0IEwgOS43NywyNDQuMTYgTCAyNDAuMjMsMjQ0LjE2IFYg1Ljg0IEggMjQyLjE5IFoiIHN0cm9rZT0iIzAwM0U2QiIgc3Ryb2tlLXdpZHRoPSIwLjciIHN0cm9rZS1taXRlcmxpbWl0PTEwIi8+PHBhdGggZD0iTTEwNi40MSw2NS42NSBMIDE0My41OSw2NS42NSIgc3Ryb2tlPSIjMDAzRTZCIiBzdHJva2Utd2lkdGg9IjAuNyIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIi8+PHBhdGggZD0iTTEwNi40MSw1NS41IEwgMTQzLjU5LDU1LjUiIHN0cm9rZT0iI0M1REVG MCIgc3Ryb2tlLXdpZHRoPSIwLjciIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIvPjxwYXRoIGQ9Ik0xMDYuNDEsNDUuMjkgTCAxNDMuNTksNDUuMjkiIHN0cm9rZT0iI0M1REVG MCIgc3Ryb2tlLXdpZHRoPSIwLjciIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIvPjxwYXRoIGQ9Ik0xMzUuNDksMTAuNzkgTCAxNDMuNTksMTAuNzkiIHN0cm9rZT0iI0M1REVG MCIgc3Ryb2tlLXdpZHRoPSIwLjciIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIvPjxwYXRoIGQ9Ik0xMDYuNDEsMTkuODkgTCAxNDMuNTksMTkuODkiIHN0cm9rZT0iI0M1REVG MCIgc3Ryb2tlLXdpZHRoPSIwLjciIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIvPjxwYXRoIGQ9Ik0xMzUuNDksMTMuMzkgTCAxNDMuNTksMTMuMzkiIHN0cm9rZT0iI0M1REVG MCIgc3Ryb2tlLXdpZHRoPSIwLjciIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIvPjxwYXRoIGQ9Ik0xMDYuNDEsMjUuNTkgTCAxNDMuNTksMjUuNTkiIHN0cm9rZT0iI0M1REVG MCIgc3Ryb2tlLXdpZHRoPSIwLjciIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIvPjxwYXRoIGQ9Ik0xMDYuNDEsMzUuNDkgTCAxNDMuNTksMzUuNDkiIHN0cm9rZT0iI0M1REVG MCIgc3Ryb2tlLXdpZHRoPSIwLjciIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIvPjxwYXRoIGQ9Ik0xMzUuNDksMTYuNTkgTCAxNDMuNTksMTYuNTkiIHN0cm9rZT0iI0M1REVGPCIgc3Ryb2tlLXdpZHRoPSIwLjciIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIvPjxyZWN0IHg9IjEyNCIgeT0iMSIgd2lkdGg9IjEwMCIgaGVpZ2h0PSIyNTAiIGZpbGw9IiNGMUZFRkYiIHN0cm9rZT0iIzAwM0U2QiIgc3Ryb2tlLXdpZHRoPSIyIi8+PHBhdGggZD0iTTk1LjgyLDY1LjY1IEwgMTM1LjQ5LDY1LjY1IiBzdHJva2U9IiMwMDNFNkIiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIi8+PHBhdGggZD0iTTk1LjgyLDU1LjUgTCAxMzUuNDksNTUuNSIgc3Ryb2tlPSIjQzVERUYwIiBzdHJva2Utd2lkdGg9IjAuNyIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIi8+PHBhdGggZD0iTTk1LjgyLDQ1LjI5IEwgMTM1LjQ5LDQ1LjI5IiBzdHJva2U9IiNDNURFRjAiIHN0cm9rZS13aWR0aD0iMC43IiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiLz48cGF0aCBkPSJNOTUuODIsMzUuNDkgTCAxMzUuNDksMzUuNDkiIHN0cm9rZT0iI0M1REVG MCIgc3Ryb2tlLXdpZHRoPSIwLjciIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIvPjxwYXRoIGQ9Ik0xMzUuNDksMTYuNTkgTCAxMzUuNDksMzUuNDkiIHN0cm9rZT0iI0M1REVGPCIgc3Ryb2tlLXdpZHRoPSIwLjciIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIvPjwvc3ZnPg==">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #FAF8F5;
+            --bg-secondary: #F5F3EF;
+            --bg-input: #FFFFFF;
+            --text-primary: #1C1917;
+            --text-secondary: #57534E;
+            --text-tertiary: #A8A29E;
+            --accent: #D97706;
+            --accent-hover: #B45309;
+            --border: #E7E5E4;
+            --border-focus: #D97706;
+        }
+
+        * {
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+        }
+
+        .font-serif {
+            font-family: 'Playfair Display', Georgia, serif;
+        }
+
+        .font-mono {
+            font-family: 'Fira Code', monospace;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--text-tertiary);
+            border-radius: 3px;
+        }
+
+        /* Input styling */
+        .input-field {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.1);
+        }
+
+        /* Button styling */
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        /* Agent cards */
+        .agent-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+        .agent-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 4px 20px rgba(217, 119, 6, 0.1);
+        }
+        .agent-card.active {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
+        }
+        .agent-card.processing {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.2); }
+            50% { box-shadow: 0 0 0 10px rgba(217, 119, 6, 0); }
+        }
+
+        /* Quick action pills */
+        .pill {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .pill:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* JSON syntax */
+        .json-key { color: #0ea5e9; }
+        .json-string { color: #22c55e; }
+        .json-number { color: #f59e0b; }
+        .json-boolean { color: #8b5cf6; }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Status indicator */
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        .status-online {
+            background: #22c55e;
+            box-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
+        }
+
+        /* Memory bars */
+        .memory-bar {
+            background: linear-gradient(90deg, var(--accent) 0%, #f59e0b 100%);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        /* Connection lines */
+        .connection-line {
+            stroke: var(--border);
+            stroke-width: 2;
+            fill: none;
+            transition: stroke 0.3s ease;
+        }
+        .connection-line.active {
+            stroke: var(--accent);
+            stroke-width: 3;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Main Container -->
+    <div class="max-w-5xl mx-auto px-6 py-8">
+        
+        <!-- Header -->
+        <header class="flex items-center justify-between mb-12">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background: linear-gradient(135deg, #F1FEFF 0%, #E0F7FA 100%); border: 2px solid #003E6B;">
+                    <img src="logo.svg" alt="VitalSync" class="w-9 h-9">
+                </div>
+                <div>
+                    <h1 class="font-serif text-2xl font-semibold" style="color: #1C1917;">VitalSync</h1>
+                    <p class="text-sm" style="color: #A8A29E;">Local Wellness Intelligence</p>
+                </div>
+            </div>
+                <div>
+                    <h1 class="font-serif text-2xl font-semibold" style="color: #1C1917;">VitalSync</h1>
+                    <p class="text-sm" style="color: #A8A29E;">Local Wellness Intelligence</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-full" style="background: rgba(34, 197, 94, 0.1);">
+                    <span class="status-dot status-online"></span>
+                    <span class="text-sm" style="color: #166534;">Gateway Online</span>
+                </div>
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-full" style="background: rgba(217, 119, 6, 0.1);">
+                    <svg class="w-4 h-4" style="color: #D97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                    <span class="text-sm" style="color: #92400E;">100% Local</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Greeting -->
+        <div class="text-center mb-10">
+            <h2 class="font-serif text-3xl font-medium mb-2" style="color: #1C1917;">Good evening, Chris</h2>
+            <p class="text-base" style="color: #78716C;">Your wellness agents are ready. How can I help you today?</p>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="flex flex-wrap justify-center gap-3 mb-10">
+            <button onclick="setQuickAction('heartrate')" class="pill">❤️ Heart Rate</button>
+            <button onclick="setQuickAction('sleep')" class="pill">😴 Sleep</button>
+            <button onclick="setQuickAction('workout')" class="pill">🏃 Workout</button>
+            <button onclick="setQuickAction('stress')" class="pill">🧘 Stress</button>
+            <button onclick="setQuickAction('nutrition')" class="pill">🥗 Nutrition</button>
+        </div>
+
+        <!-- Main Input Area -->
+        <div class="max-w-3xl mx-auto mb-12">
+            <div class="input-field p-4">
+                <textarea 
+                    id="userInput" 
+                    rows="3" 
+                    class="w-full resize-none text-base bg-transparent border-none focus:outline-none focus:ring-0"
+                    style="color: #1C1917;"
+                    placeholder="Ask about your health metrics, request insights, or get wellness recommendations..."
+                ></textarea>
+                <div class="flex items-center justify-between mt-3 pt-3" style="border-top: 1px solid #E7E5E4;">
+                    <div class="flex items-center gap-2">
+                        <button class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                            <svg class="w-5 h-5" style="color: #A8A29E;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+                            </svg>
+                        </button>
+                        <button class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                            <svg class="w-5 h-5" style="color: #A8A29E;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+                            </svg>
+</button>
+                        <select class="text-sm bg-transparent border-none focus:outline-none" style="color: #78716C;">
+                            <option>llama3.2</option>
+                            <option>phi3</option>
+                            <option>qwen2.5</option>
+                        </select>
+                    </div>
+                    <button onclick="processRequest()" class="btn-primary px-5 py-2 text-sm font-medium flex items-center gap-2">
+                        <span>Send</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Response Area -->
+        <div id="responseArea" class="max-w-3xl mx-auto mb-12 hidden">
+            <div class="fade-in">
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center" style="background: linear-gradient(135deg, #F1FEFF 0%, #E0F7FA 100%); border: 1px solid #003E6B;">
+                        <img src="logo.svg" alt="VitalSync" class="w-5 h-5">
+                    </div>
+                    <div class="flex-1">
+                        <div id="responseContent" class="text-base leading-relaxed" style="color: #1C1917;"></div>
+                        <div id="responseMetadata" class="mt-3 flex items-center gap-4 text-sm" style="color: #A8A29E;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Agent Visualization -->
+        <div id="agentViz" class="bg-white rounded-2xl border border-[#E7E5E4] p-6 mb-12">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="font-serif text-xl font-medium" style="color: #1C1917;">Agent Orchestration</h3>
+                <button onclick="toggleViz()" class="text-sm" style="color: #78716C;">Toggle View</button>
+            </div>
+
+            <!-- SVG Connection Diagram -->
+            <svg class="w-full" style="height: 280px;" viewBox="0 0 800 280">
+                <!-- Connection Lines -->
+                <path id="line1" class="connection-line" d="M 120 200 Q 120 140 200 100"/>
+                <path id="line2" class="connection-line" d="M 200 100 Q 320 80 400 80"/>
+                <path id="line3" class="connection-line" d="M 400 80 Q 480 80 600 100"/>
+                <path id="line4" class="connection-line" d="M 600 100 Q 680 140 680 200"/>
+                <path id="line5" class="connection-line" d="M 680 200 Q 600 240 520 240"/>
+                <path id="line6" class="connection-line" d="M 520 240 Q 400 260 280 240"/>
+                <path id="line7" class="connection-line" d="M 280 240 Q 120 240 120 200"/>
+
+                <!-- Agent Nodes -->
+                <!-- Signal Ingestion -->
+                <g id="node-signal" class="cursor-pointer" onclick="selectAgent('signal')">
+                    <rect x="60" y="170" width="120" height="70" rx="12" fill="white" stroke="#E7E5E4" stroke-width="2"/>
+                    <text x="120" y="195" text-anchor="middle" font-size="11" fill="#78716C">Signal Ingestion</text>
+                    <text x="120" y="215" text-anchor="middle" font-size="9" fill="#A8A29E">Data Normalization</text>
+                </g>
+
+                <!-- Interpretation -->
+                <g id="node-interpretation" class="cursor-pointer" onclick="selectAgent('interpretation')">
+                    <rect x="340" y="40" width="120" height="70" rx="12" fill="white" stroke="#E7E5E4" stroke-width="2"/>
+                    <text x="400" y="65" text-anchor="middle" font-size="11" fill="#78716C">Interpretation</text>
+                    <text x="400" y="85" text-anchor="middle" font-size="9" fill="#A8A29E">Pattern Analysis</text>
+                </g>
+
+                <!-- Feedback Generation -->
+                <g id="node-feedback" class="cursor-pointer" onclick="selectAgent('feedback')">
+                    <rect x="620" y="170" width="120" height="70" rx="12" fill="white" stroke="#E7E5E4" stroke-width="2"/>
+                    <text x="680" y="195" text-anchor="middle" font-size="11" fill="#78716C">Feedback Gen</text>
+                    <text x="680" y="215" text-anchor="middle" font-size="9" fill="#A8A29E">Response</text>
+                </g>
+
+                <!-- User Modeling -->
+                <g id="node-modeling" class="cursor-pointer" onclick="selectAgent('modeling')">
+                    <rect x="460" y="210" width="120" height="70" rx="12" fill="white" stroke="#E7E5E4" stroke-width="2"/>
+                    <text x="520" y="235" text-anchor="middle" font-size="11" fill="#78716C">User Modeling</text>
+                    <text x="520" y="255" text-anchor="middle" font-size="9" fill="#A8A29E">Digital Twin</text>
+                </g>
+
+                <!-- Safety Supervisor -->
+                <g id="node-safety" class="cursor-pointer" onclick="selectAgent('safety')">
+                    <rect x="180" y="210" width="120" height="70" rx="12" fill="white" stroke="#E7E5E4" stroke-width="2"/>
+                    <text x="240" y="235" text-anchor="middle" font-size="11" fill="#78716C">Safety</text>
+                    <text x="240" y="255" text-anchor="middle" font-size="9" fill="#A8A29E">Guardrail</text>
+                </g>
+            </svg>
+
+            <!-- Agent Cards Grid -->
+            <div class="grid grid-cols-5 gap-4 mt-6">
+                <div id="agent-signal" class="agent-card p-4 text-center cursor-pointer" onclick="selectAgent('signal')">
+                    <div class="w-10 h-10 mx-auto mb-2 rounded-lg flex items-center justify-center" style="background: rgba(59, 130, 246, 0.1);">
+                        <svg class="w-5 h-5" style="color: #3b82f6;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                        </svg>
+                    </div>
+                    <p class="text-xs font-medium" style="color: #78716C;">Signal</p>
+                    <p class="text-[10px]" style="color: #A8A29E;">Ingestion</p>
+                </div>
+
+                <div id="agent-modeling" class="agent-card p-4 text-center cursor-pointer" onclick="selectAgent('modeling')">
+                    <div class="w-10 h-10 mx-auto mb-2 rounded-lg flex items-center justify-center" style="background: rgba(6, 182, 212, 0.1);">
+                        <svg class="w-5 h-5" style="color: #06b6d4;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                    </div>
+                    <p class="text-xs font-medium" style="color: #78716C;">User</p>
+                    <p class="text-[10px]" style="color: #A8A29E;">Modeling</p>
+                </div>
+
+                <div id="agent-interpretation" class="agent-card p-4 text-center cursor-pointer" onclick="selectAgent('interpretation')">
+                    <div class="w-10 h-10 mx-auto mb-2 rounded-lg flex items-center justify-center" style="background: rgba(139, 92, 246, 0.1);">
+                        <svg class="w-5 h-5" style="color: #8b5cf6;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                        </svg>
+                    </div>
+                    <p class="text-xs font-medium" style="color: #78716C;">Interpretation</p>
+                    <p class="text-[10px]" style="color: #A8A29E;">Analysis</p>
+                </div>
+
+                <div id="agent-feedback" class="agent-card p-4 text-center cursor-pointer" onclick="selectAgent('feedback')">
+                    <div class="w-10 h-10 mx-auto mb-2 rounded-lg flex items-center justify-center" style="background: rgba(245, 158, 11, 0.1);">
+                        <svg class="w-5 h-5" style="color: #f59e0b;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                        </svg>
+                    </div>
+                    <p class="text-xs font-medium" style="color: #78716C;">Feedback</p>
+                    <p class="text-[10px]" style="color: #A8A29E;">Generation</p>
+                </div>
+
+                <div id="agent-safety" class="agent-card p-4 text-center cursor-pointer" onclick="selectAgent('safety')">
+                    <div class="w-10 h-10 mx-auto mb-2 rounded-lg flex items-center justify-center" style="background: rgba(34, 197, 94, 0.1);">
+                        <svg class="w-5 h-5" style="color: #22c55e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                        </svg>
+                    </div>
+                    <p class="text-xs font-medium" style="color: #78716C;">Safety</p>
+                    <p class="text-[10px]" style="color: #A8A29E;">Supervisor</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Panels -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            <!-- Message Schema -->
+            <div class="bg-white rounded-2xl border border-[#E7E5E4] p-5">
+                <h4 class="font-medium mb-3" style="color: #1C1917;">Message Schema</h4>
+                <div id="messageSchema" class="font-mono text-xs p-4 rounded-lg" style="background: #F5F3EF; color: #1C1917; max-height: 200px; overflow: auto;">
+                    <pre><code id="jsonContent">{
+  <span class="json-key">"event_id"</span>: <span class="json-string">"uuid-v4"</span>,
+  <span class="json-key">"timestamp"</span>: <span class="json-string">"ISO-8601"</span>,
+  <span class="json-key">"topic"</span>: <span class="json-string">"DATA_INGESTED"</span>,
+  <span class="json-key">"source_agent"</span>: <span class="json-string">"signal_ingestion_v1"</span>,
+  <span class="json-key">"payload"</span>: {
+    <span class="json-key">"metric"</span>: <span class="json-string">"heart_rate"</span>,
+    <span class="json-key">"value"</span>: <span class="json-number">72</span>,
+    <span class="json-key">"unit"</span>: <span class="json-string">"bpm"</span>
+  }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Memory Model -->
+            <div class="bg-white rounded-2xl border border-[#E7E5E4] p-5">
+                <h4 class="font-medium mb-3" style="color: #1C1917;">Memory Model</h4>
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span style="color: #78716C;">Working Memory</span>
+                            <span id="workingMemValue" style="color: #D97706;">0%</span>
+                        </div>
+                        <div class="h-2 rounded-full" style="background: #F5F3EF;">
+                            <div id="workingMemBar" class="memory-bar h-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span style="color: #78716C;">Long-term Memory</span>
+                            <span id="longtermMemValue" style="color: #8b5cf6;">12 KB</span>
+                        </div>
+                        <div class="h-2 rounded-full" style="background: #F5F3EF;">
+                            <div id="longtermMemBar" class="h-full rounded-full" style="width: 15%; background: linear-gradient(90deg, #8b5cf6 0%, #a78bfa 100%);"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span style="color: #78716C;">Structured Storage</span>
+                            <span id="structuredMemValue" style="color: #22c55e;">2.4 MB</span>
+                        </div>
+                        <div class="h-2 rounded-full" style="background: #F5F3EF;">
+                            <div id="structuredMemBar" class="h-full rounded-full" style="width: 24%; background: linear-gradient(90deg, #22c55e 0%, #4ade80 100%);"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="memoryDetails" class="mt-4 text-xs p-3 rounded-lg" style="background: #F5F3EF; color: #78716C;">
+                    Click an agent to view memory details
+                </div>
+            </div>
+        </div>
+
+        <!-- Safety Constraints -->
+        <div class="bg-white rounded-2xl border border-[#E7E5E4] p-5">
+            <h4 class="font-medium mb-4" style="color: #1C1917;">Active Safety Constraints</h4>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="p-3 rounded-xl" style="background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2);">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="w-2 h-2 rounded-full" style="background: #ef4444;"></span>
+                        <span class="text-sm font-medium" style="color: #1C1917;">Medical Boundaries</span>
+                    </div>
+                    <p class="text-xs" style="color: #78716C;">Blocks diagnostic language, enforces disclaimers</p>
+                </div>
+                <div class="p-3 rounded-xl" style="background: rgba(245, 158, 11, 0.05); border: 1px solid rgba(245, 158, 11, 0.2);">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="w-2 h-2 rounded-full" style="background: #f59e0b;"></span>
+                        <span class="text-sm font-medium" style="color: #1C1917;">Factual Verification</span>
+                    </div>
+                    <p class="text-xs" style="color: #78716C;">Validates claims against stored biometric data</p>
+                </div>
+                <div class="p-3 rounded-xl" style="background: rgba(6, 182, 212, 0.05); border: 1px solid rgba(6, 182, 212, 0.2);">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="w-2 h-2 rounded-full" style="background: #06b6d4;"></span>
+                        <span class="text-sm font-medium" style="color: #1C1917;">Privacy First</span>
+                    </div>
+                    <p class="text-xs" style="color: #78716C;">100% local processing, no external calls</p>
+                </div>
+                <div class="p-3 rounded-xl" style="background: rgba(139, 92, 246, 0.05); border: 1px solid rgba(139, 92, 246, 0.2);">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="w-2 h-2 rounded-full" style="background: #8b5cf6;"></span>
+                        <span class="text-sm font-medium" style="color: #1C1917;">Hallucination Prevention</span>
+                    </div>
+                    <p class="text-xs" style="color: #78716C;">Source grounding & confidence calibration</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center mt-12 py-6" style="border-top: 1px solid #E7E5E4;">
+            <p class="text-sm" style="color: #A8A29E;">Powered by local Ollama models • All data stays on your device</p>
+        </footer>
+    </div>
+
+    <script>
+        // State
+        let isProcessing = false;
+        let currentAgent = null;
+        let currentQuickAction = null;
+
+        // Agent memory data
+        const agentMemories = {
+            signal: '<strong>Signal Ingestion:</strong> Buffering last 6 hours of raw sensor data from HealthKit, Health Connect, and wearables.',
+            modeling: '<strong>User Modeling:</strong> 30-day HR baseline: 68bpm | 7-day sleep avg: 6.2h | Preference: Morning workouts',
+            interpretation: '<strong>Interpretation:</strong> Retrieved 12 relevant episodes from vector store. Confidence: 85%',
+            feedback: '<strong>Feedback Gen:</strong> Retrieved user tone preference: Supportive | Template: Health & Wellness v2.1',
+            safety: '<strong>Safety Supervisor:</strong> Blocklist: 2,847 terms | Allow medical advice: FALSE | Emergency thresholds: HR>180, SpO2<88%'
+        };
+
+        // Quick action handlers
+        function setQuickAction(action) {
+            currentQuickAction = action;
+            const prompts = {
+                heartrate: 'My heart rate has been elevated today. What insights can you provide?',
+                sleep: 'How did I sleep last night compared to my usual pattern?',
+                workout: 'I just finished a 5k run. What should my recovery look like?',
+                stress: 'I\'ve been feeling stressed lately. Any recommendations?',
+                nutrition: 'What should I eat today for optimal energy?'
+            };
+            document.getElementById('userInput').value = prompts[action] || '';
+        }
+
+        // Select agent
+        function selectAgent(agentId) {
+            // Remove active from all
+            document.querySelectorAll('.agent-card').forEach(card => card.classList.remove('active'));
+            document.querySelectorAll('.connection-line').forEach(line => line.classList.remove('active'));
+            
+            // Activate selected
+            const card = document.getElementById('agent-' + agentId);
+            const node = document.getElementById('node-' + agentId);
+            if (card) card.classList.add('active');
+            
+            // Update memory details
+            document.getElementById('memoryDetails').innerHTML = agentMemories[agentId] || 'Select an agent';
+            
+            // Animate connection lines
+            animateConnections(agentId);
+        }
+
+        function animateConnections(agentId) {
+            const lineMap = {
+                signal: ['line1', 'line7'],
+                modeling: ['line7', 'line6'],
+                interpretation: ['line2', 'line3'],
+                feedback: ['line3', 'line4'],
+                safety: ['line5', 'line6']
+            };
+            
+            const lines = lineMap[agentId] || [];
+            lines.forEach((lineId, index) => {
+                setTimeout(() => {
+                    document.getElementById(lineId).classList.add('active');
+                }, index * 200);
+            });
+        }
+
+        // Toggle visualization
+        function toggleViz() {
+            const viz = document.getElementById('agentViz');
+            viz.classList.toggle('hidden');
+        }
+
+        // Process request with Ollama
+        async function processRequest() {
+            const input = document.getElementById('userInput').value.trim();
+            if (!input || isProcessing) return;
+
+            isProcessing = true;
+            
+            // Show processing state
+            const responseArea = document.getElementById('responseArea');
+            const responseContent = document.getElementById('responseContent');
+            const responseMetadata = document.getElementById('responseMetadata');
+            
+            responseArea.classList.remove('hidden');
+            responseContent.innerHTML = '<span style="color: #A8A29E;">Processing your request...</span>';
+            responseMetadata.innerHTML = '';
+            
+            // Animate agents
+            const agentSequence = ['signal', 'modeling', 'interpretation', 'feedback', 'safety'];
+            
+            for (let i = 0; i < agentSequence.length; i++) {
+                const agent = agentSequence[i];
+                selectAgent(agent);
+                
+                // Update memory bars progressively
+                const progress = ((i + 1) / agentSequence.length) * 100;
+                document.getElementById('workingMemBar').style.width = progress + '%';
+                document.getElementById('workingMemValue').textContent = Math.round(progress) + '%';
+                
+                await new Promise(r => setTimeout(r, 400));
+            }
+            
+            // Call Ollama
+            try {
+                const response = await fetch('http://localhost:11434/api/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        model: 'llama3.2',
+                        prompt: `You are VitalSync, a local wellness AI assistant. The user said: "${input}". 
+                        
+The system context includes:
+- User has been tracking heart rate, sleep, workouts, and stress
+- Current baselines: HR 68bpm, Sleep 6.2h/night
+- User prefers supportive, informative tone
+- Safety constraints: No medical advice, factual verification required
+
+Respond helpfully about wellness in a supportive, informative manner. If the user asks about medical conditions, remind them to consult healthcare professionals.`,
+                        stream: false
+                    })
+                });
+                
+                const data = await response.json();
+                
+                // Display response
+                responseContent.innerHTML = formatResponse(data.response);
+                responseMetadata.innerHTML = `
+                    <span>Model: llama3.2</span>
+                    <span>Tokens: ${data.eval_count || 'N/A'}</span>
+                    <span>Duration: ${(data.eval_duration / 1000000000).toFixed(2)}s</span>
+                `;
+                
+            } catch (error) {
+                responseContent.innerHTML = `<span style="color: #ef4444;">Error connecting to Ollama: ${error.message}</span>
+                <br><br>
+                <em>Make sure Ollama is running with: ollama run llama3.2</em>`;
+            }
+            
+            isProcessing = false;
+        }
+
+        function formatResponse(text) {
+            // Simple markdown-like formatting
+            return text
+                .replace(/\n\n/g, '<br><br>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>');
+        }
+
+        // Enter key to submit
+        document.getElementById('userInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                processRequest();
+            }
+        });
+
+        // Initialize
+        console.log('VitalSync initialized');
+    </script>
+</body>
+</html>
