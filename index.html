@@ -305,6 +305,26 @@
             opacity: 0.12;
         }
 
+        .loading-skeleton {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            background: #F5F3EF;
+        }
+
+        .loading-skeleton::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            transform: translateX(-100%);
+            background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.85) 50%, transparent 100%);
+            animation: shimmer 1.2s infinite;
+        }
+
+        @keyframes shimmer {
+            100% { transform: translateX(100%); }
+        }
+
         .pipeline-step {
             border: 1px solid var(--border);
             border-radius: 12px;
@@ -529,6 +549,21 @@
                     <div class="flex-1">
                         <div id="responseContent" role="status" aria-live="polite" class="text-base leading-relaxed whitespace-pre-wrap" style="color: #1C1917;"></div>
                         <div id="responseMetadata" class="mt-3 flex items-center gap-4 text-sm" style="color: #A8A29E;"></div>
+                        <div id="responseLoading" class="mt-4 hidden" aria-live="polite">
+                            <p id="loadingMessage" class="text-sm mb-3" style="color:#78716C;">Preparing your request...</p>
+                            <div class="space-y-2">
+                                <div class="loading-skeleton h-4 w-full"></div>
+                                <div class="loading-skeleton h-4 w-11/12"></div>
+                                <div class="loading-skeleton h-4 w-9/12"></div>
+                            </div>
+                        </div>
+                        <div id="responseError" class="mt-4 hidden rounded-xl p-3" style="border:1px solid rgba(185, 28, 28, 0.2); background: rgba(254, 242, 242, 0.9);">
+                            <p id="responseErrorText" class="text-sm mb-3" style="color:#991B1B;"></p>
+                            <div class="flex flex-wrap items-center gap-2 text-sm">
+                                <button id="retryButton" type="button" class="px-3 py-1.5 rounded-lg text-white" style="background:#B91C1C;" onclick="processRequest()">Retry</button>
+                                <span style="color:#7F1D1D;">Start Ollama with <span class="font-mono">ollama serve</span>, then run <span id="errorRunModel" class="font-mono">ollama run llama3.2</span>.</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -991,6 +1026,8 @@
         function showImportResult(message, isError) {
             const responseArea = document.getElementById('responseArea');
             if (responseArea) responseArea.classList.remove('hidden');
+            setLoadingVisible(false);
+            hideResponseError();
             setResponseText(message, isError ? '#b91c1c' : '#166534');
             clearResponseMetadata();
         }
@@ -1633,6 +1670,30 @@
             responseContent.style.color = color || '#1C1917';
         }
 
+        function setLoadingVisible(visible) {
+            const loading = document.getElementById('responseLoading');
+            if (loading) loading.classList.toggle('hidden', !visible);
+        }
+
+        function setLoadingMessage(message) {
+            const loadingMessage = document.getElementById('loadingMessage');
+            if (loadingMessage) loadingMessage.textContent = message;
+        }
+
+        function hideResponseError() {
+            const error = document.getElementById('responseError');
+            if (error) error.classList.add('hidden');
+        }
+
+        function showResponseError(message, modelName) {
+            const error = document.getElementById('responseError');
+            const text = document.getElementById('responseErrorText');
+            const modelRun = document.getElementById('errorRunModel');
+            if (text) text.textContent = message;
+            if (modelRun) modelRun.textContent = `ollama run ${modelName}`;
+            if (error) error.classList.remove('hidden');
+        }
+
         function clearResponseMetadata() {
             const metadata = document.getElementById('responseMetadata');
             if (metadata) metadata.textContent = '';
@@ -1654,6 +1715,73 @@
             addMetadataItem(metadata, 'Duration', duration);
         }
 
+        async function readStreamedOllamaResponse(response) {
+            if (!response.body || !response.body.getReader) {
+                const fallbackData = await response.json();
+                return {
+                    text: fallbackData && typeof fallbackData.response === 'string' ? fallbackData.response : '',
+                    evalCount: fallbackData ? fallbackData.eval_count : undefined,
+                    evalDuration: fallbackData ? fallbackData.eval_duration : undefined
+                };
+            }
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
+            let fullText = '';
+            let evalCount;
+            let evalDuration;
+
+            setResponseText('', '#1C1917');
+
+            while (true) {
+                const { value, done } = await reader.read();
+                if (done) break;
+
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split('\n');
+                buffer = lines.pop() || '';
+
+                for (const line of lines) {
+                    if (!line.trim()) continue;
+                    const parsed = JSON.parse(line);
+                    if (typeof parsed.response === 'string' && parsed.response) {
+                        fullText += parsed.response;
+                        setResponseText(fullText, '#1C1917');
+                    }
+                    if (parsed.done) {
+                        evalCount = parsed.eval_count;
+                        evalDuration = parsed.eval_duration;
+                    }
+                }
+            }
+
+            if (buffer.trim()) {
+                const parsed = JSON.parse(buffer);
+                if (typeof parsed.response === 'string') {
+                    fullText += parsed.response;
+                    setResponseText(fullText, '#1C1917');
+                }
+                if (parsed.done) {
+                    evalCount = parsed.eval_count;
+                    evalDuration = parsed.eval_duration;
+                }
+            }
+
+            return { text: fullText, evalCount, evalDuration };
+        }
+
+        function updatePipelineMicrocopy(stepId) {
+            const messages = {
+                signal: 'Analyzing your latest vitals and prompt intent…',
+                modeling: 'Updating your baseline and trend profile…',
+                interpretation: 'Connecting patterns across sleep, stress, and activity…',
+                feedback: 'Drafting actionable recommendations…',
+                safety: 'Running safety and clarity checks before delivery…'
+            };
+            setLoadingMessage(messages[stepId] || 'Preparing your response…');
+        }
+
         // Process request with Ollama
         async function processRequest() {
             const inputEl = document.getElementById('userInput');
@@ -1673,7 +1801,9 @@
             }
 
             if (responseArea) responseArea.classList.remove('hidden');
-            setResponseText('Processing your request...', '#78716C');
+            hideResponseError();
+            setLoadingVisible(true);
+            setLoadingMessage('Preparing your request and selecting agents…');
             clearResponseMetadata();
             resetPipelineTimeline();
 
@@ -1686,6 +1816,7 @@
                     const stepStart = performance.now();
                     markPipelineStep(agentId, 'active');
                     selectAgent(agentId);
+                    updatePipelineMicrocopy(agentId);
 
                     const progress = ((i + 1) / agentSequence.length) * 100;
                     const workingMemBar = document.getElementById('workingMemBar');
@@ -1697,6 +1828,7 @@
                     markPipelineStep(agentId, 'completed', performance.now() - stepStart);
                 }
 
+                setLoadingMessage('Generating response with your local model…');
                 const controller = new AbortController();
                 timeoutId = setTimeout(() => controller.abort(), 30000);
                 const baselines = getBaselines();
@@ -1717,7 +1849,7 @@ ${baselineLine}
 - Safety constraints: No medical advice, factual verification required
 
 Respond helpfully about wellness in a supportive, informative manner. If the user asks about medical conditions, remind them to consult healthcare professionals.`,
-                        stream: false
+                        stream: true
                     })
                 });
 
@@ -1726,18 +1858,21 @@ Respond helpfully about wellness in a supportive, informative manner. If the use
                     throw new Error(`Local model request failed (${response.status}). ${errorBody.slice(0, 160)}`);
                 }
 
-                const data = await response.json();
-                if (!data || typeof data.response !== 'string') {
-                    throw new Error('Local model returned an unexpected payload.');
+                const data = await readStreamedOllamaResponse(response);
+                if (!data || typeof data.text !== 'string' || data.text.trim().length === 0) {
+                    throw new Error('Local model returned an empty response.');
                 }
 
-                setResponseText(data.response, '#1C1917');
-                renderResponseMetadata(selectedModel, data.eval_count, data.eval_duration);
+                setLoadingVisible(false);
+                hideResponseError();
+                setResponseText(data.text, '#1C1917');
+                renderResponseMetadata(selectedModel, data.evalCount, data.evalDuration);
             } catch (error) {
                 const errorMessage = error && error.name === 'AbortError'
                     ? 'Request timed out. Verify Ollama is running and the selected model is available.'
                     : `Unable to connect to local Ollama. ${error.message}`;
-                setResponseText(`${errorMessage}\n\nRun: ollama run ${selectedModel}`, '#b91c1c');
+                setLoadingVisible(false);
+                showResponseError(errorMessage, selectedModel);
             } finally {
                 if (timeoutId) clearTimeout(timeoutId);
                 const durationEl = document.getElementById('pipelineDuration');
@@ -1769,6 +1904,14 @@ Respond helpfully about wellness in a supportive, informative manner. If the use
         resetPipelineTimeline();
         enableKeyboardAgentNodes();
         selectAgent('signal');
+        const modelSelect = document.getElementById('modelSelect');
+        const modelHintName = document.getElementById('modelHintName');
+        if (modelSelect && modelHintName) {
+            modelHintName.textContent = modelSelect.value;
+            modelSelect.addEventListener('change', () => {
+                modelHintName.textContent = modelSelect.value;
+            });
+        }
         const attachDataButton = document.getElementById('attachDataButton');
         const metricsFileInput = document.getElementById('metricsFileInput');
         if (attachDataButton) attachDataButton.addEventListener('click', openMetricsImportDialog);
