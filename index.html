@@ -82,9 +82,13 @@
 
         /* Agent cards */
         .agent-card {
+            appearance: none;
             background: white;
             border: 1px solid var(--border);
             border-radius: 16px;
+            cursor: pointer;
+            display: block;
+            width: 100%;
             transition: all 0.3s ease;
         }
         .agent-card:hover {
@@ -94,6 +98,26 @@
         .agent-card.active {
             border-color: var(--accent);
             box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
+        }
+
+        .agent-card:focus-visible,
+        .pill:focus-visible,
+        .challenge-card:focus-visible,
+        .viz-control:focus-visible {
+            outline: 3px solid rgba(217, 119, 6, 0.35);
+            outline-offset: 2px;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.15);
+        }
+
+        .agent-node:focus-visible {
+            outline: none;
+        }
+
+        .agent-node:focus-visible rect {
+            stroke: var(--accent);
+            stroke-width: 3;
+            filter: drop-shadow(0 0 2px rgba(217, 119, 6, 0.55));
         }
         .agent-card.processing {
             animation: pulse 1.5s infinite;
@@ -440,7 +464,7 @@
         <div id="agentViz" class="bg-white rounded-2xl border border-[#E7E5E4] p-6 mb-12">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="font-serif text-xl font-medium" style="color: #1C1917;">Agent Orchestration</h3>
-                <button id="vizToggleButton" type="button" aria-expanded="true" onclick="toggleViz()" class="text-sm" style="color: #78716C;">Hide View</button>
+                <button id="vizToggleButton" type="button" aria-expanded="true" onclick="toggleViz()" class="text-sm viz-control" style="color: #78716C;">Hide View</button>
             </div>
 
             <div id="agentVizContent">
@@ -457,35 +481,35 @@
 
                 <!-- Agent Nodes -->
                 <!-- Signal Ingestion -->
-                <g id="node-signal" class="cursor-pointer" onclick="selectAgent('signal')">
+                <g id="node-signal" class="cursor-pointer agent-node" onclick="selectAgent('signal')">
                     <rect x="60" y="170" width="120" height="70" rx="12" fill="white" stroke="#E7E5E4" stroke-width="2"/>
                     <text x="120" y="195" text-anchor="middle" font-size="11" fill="#78716C">Signal Ingestion</text>
                     <text x="120" y="215" text-anchor="middle" font-size="9" fill="#A8A29E">Data Normalization</text>
                 </g>
 
                 <!-- Interpretation -->
-                <g id="node-interpretation" class="cursor-pointer" onclick="selectAgent('interpretation')">
+                <g id="node-interpretation" class="cursor-pointer agent-node" onclick="selectAgent('interpretation')">
                     <rect x="340" y="40" width="120" height="70" rx="12" fill="white" stroke="#E7E5E4" stroke-width="2"/>
                     <text x="400" y="65" text-anchor="middle" font-size="11" fill="#78716C">Interpretation</text>
                     <text x="400" y="85" text-anchor="middle" font-size="9" fill="#A8A29E">Pattern Analysis</text>
                 </g>
 
                 <!-- Feedback Generation -->
-                <g id="node-feedback" class="cursor-pointer" onclick="selectAgent('feedback')">
+                <g id="node-feedback" class="cursor-pointer agent-node" onclick="selectAgent('feedback')">
                     <rect x="620" y="170" width="120" height="70" rx="12" fill="white" stroke="#E7E5E4" stroke-width="2"/>
                     <text x="680" y="195" text-anchor="middle" font-size="11" fill="#78716C">Feedback Gen</text>
                     <text x="680" y="215" text-anchor="middle" font-size="9" fill="#A8A29E">Response</text>
                 </g>
 
                 <!-- User Modeling -->
-                <g id="node-modeling" class="cursor-pointer" onclick="selectAgent('modeling')">
+                <g id="node-modeling" class="cursor-pointer agent-node" onclick="selectAgent('modeling')">
                     <rect x="460" y="210" width="120" height="70" rx="12" fill="white" stroke="#E7E5E4" stroke-width="2"/>
                     <text x="520" y="235" text-anchor="middle" font-size="11" fill="#78716C">User Modeling</text>
                     <text x="520" y="255" text-anchor="middle" font-size="9" fill="#A8A29E">Digital Twin</text>
                 </g>
 
                 <!-- Safety Supervisor -->
-                <g id="node-safety" class="cursor-pointer" onclick="selectAgent('safety')">
+                <g id="node-safety" class="cursor-pointer agent-node" onclick="selectAgent('safety')">
                     <rect x="180" y="210" width="120" height="70" rx="12" fill="white" stroke="#E7E5E4" stroke-width="2"/>
                     <text x="240" y="235" text-anchor="middle" font-size="11" fill="#78716C">Safety</text>
                     <text x="240" y="255" text-anchor="middle" font-size="9" fill="#A8A29E">Guardrail</text>
@@ -494,7 +518,7 @@
 
             <!-- Agent Cards Grid -->
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mt-6">
-                <div id="agent-signal" class="agent-card p-4 text-center cursor-pointer" onclick="selectAgent('signal')">
+                <button id="agent-signal" class="agent-card p-4 text-center" type="button" onclick="selectAgent('signal')">
                     <div class="w-10 h-10 mx-auto mb-2 rounded-lg flex items-center justify-center" style="background: rgba(59, 130, 246, 0.1);">
                         <svg class="w-5 h-5" style="color: #3b82f6;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
@@ -502,9 +526,9 @@
                     </div>
                     <p class="text-xs font-medium" style="color: #78716C;">Signal</p>
                     <p class="text-[10px]" style="color: #A8A29E;">Ingestion</p>
-                </div>
+                </button>
 
-                <div id="agent-modeling" class="agent-card p-4 text-center cursor-pointer" onclick="selectAgent('modeling')">
+                <button id="agent-modeling" class="agent-card p-4 text-center" type="button" onclick="selectAgent('modeling')">
                     <div class="w-10 h-10 mx-auto mb-2 rounded-lg flex items-center justify-center" style="background: rgba(6, 182, 212, 0.1);">
                         <svg class="w-5 h-5" style="color: #06b6d4;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
@@ -512,9 +536,9 @@
                     </div>
                     <p class="text-xs font-medium" style="color: #78716C;">User</p>
                     <p class="text-[10px]" style="color: #A8A29E;">Modeling</p>
-                </div>
+                </button>
 
-                <div id="agent-interpretation" class="agent-card p-4 text-center cursor-pointer" onclick="selectAgent('interpretation')">
+                <button id="agent-interpretation" class="agent-card p-4 text-center" type="button" onclick="selectAgent('interpretation')">
                     <div class="w-10 h-10 mx-auto mb-2 rounded-lg flex items-center justify-center" style="background: rgba(139, 92, 246, 0.1);">
                         <svg class="w-5 h-5" style="color: #8b5cf6;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
@@ -522,9 +546,9 @@
                     </div>
                     <p class="text-xs font-medium" style="color: #78716C;">Interpretation</p>
                     <p class="text-[10px]" style="color: #A8A29E;">Analysis</p>
-                </div>
+                </button>
 
-                <div id="agent-feedback" class="agent-card p-4 text-center cursor-pointer" onclick="selectAgent('feedback')">
+                <button id="agent-feedback" class="agent-card p-4 text-center" type="button" onclick="selectAgent('feedback')">
                     <div class="w-10 h-10 mx-auto mb-2 rounded-lg flex items-center justify-center" style="background: rgba(245, 158, 11, 0.1);">
                         <svg class="w-5 h-5" style="color: #f59e0b;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
@@ -532,9 +556,9 @@
                     </div>
                     <p class="text-xs font-medium" style="color: #78716C;">Feedback</p>
                     <p class="text-[10px]" style="color: #A8A29E;">Generation</p>
-                </div>
+                </button>
 
-                <div id="agent-safety" class="agent-card p-4 text-center cursor-pointer" onclick="selectAgent('safety')">
+                <button id="agent-safety" class="agent-card p-4 text-center" type="button" onclick="selectAgent('safety')">
                     <div class="w-10 h-10 mx-auto mb-2 rounded-lg flex items-center justify-center" style="background: rgba(34, 197, 94, 0.1);">
                         <svg class="w-5 h-5" style="color: #22c55e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
@@ -542,7 +566,7 @@
                     </div>
                     <p class="text-xs font-medium" style="color: #78716C;">Safety</p>
                     <p class="text-[10px]" style="color: #A8A29E;">Supervisor</p>
-                </div>
+                </button>
             </div>
 
             <div class="mt-6">
@@ -1081,24 +1105,24 @@
 
         function enableKeyboardAgentNodes() {
             const nodeAgentMap = {
-                'node-signal': 'signal',
-                'node-modeling': 'modeling',
-                'node-interpretation': 'interpretation',
-                'node-feedback': 'feedback',
-                'node-safety': 'safety'
+                'node-signal': { id: 'signal', label: 'Signal Ingestion' },
+                'node-modeling': { id: 'modeling', label: 'User Modeling' },
+                'node-interpretation': { id: 'interpretation', label: 'Interpretation' },
+                'node-feedback': { id: 'feedback', label: 'Feedback Generation' },
+                'node-safety': { id: 'safety', label: 'Safety Supervisor' }
             };
 
-            Object.entries(nodeAgentMap).forEach(([nodeId, agentId]) => {
+            Object.entries(nodeAgentMap).forEach(([nodeId, agent]) => {
                 const node = document.getElementById(nodeId);
                 if (!node) return;
 
                 node.setAttribute('tabindex', '0');
                 node.setAttribute('role', 'button');
-                node.setAttribute('aria-label', `Select ${agentId} agent`);
+                node.setAttribute('aria-label', `Select ${agent.label} agent node`);
                 node.addEventListener('keydown', event => {
                     if (event.key === 'Enter' || event.key === ' ') {
                         event.preventDefault();
-                        selectAgent(agentId);
+                        selectAgent(agent.id);
                     }
                 });
             });
