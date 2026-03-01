@@ -290,6 +290,78 @@
             border-color: #22c55e;
         }
 
+        .section-header {
+            margin-bottom: 14px;
+        }
+
+        .section-eyebrow {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            color: var(--text-tertiary);
+        }
+
+        .subnav-chip {
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 999px;
+            padding: 7px 14px;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .subnav-chip:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .btn-secondary-muted {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: #fff;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary-muted:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .technical-details summary {
+            list-style: none;
+            cursor: pointer;
+        }
+
+        .technical-details summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .technical-details[open] .technical-chevron {
+            transform: rotate(180deg);
+        }
+
+        .technical-chevron {
+            transition: transform 0.2s ease;
+        }
+
+        @media (max-width: 767px) {
+            .mobile-priority-flow {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .mobile-priority-1 { order: 1; }
+            .mobile-priority-2 { order: 2; }
+            .mobile-priority-3 { order: 3; }
+            .mobile-priority-4 { order: 4; }
+            .mobile-priority-5 { order: 5; }
+            .mobile-priority-6 { order: 6; }
+            .mobile-priority-7 { order: 7; }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             * {
                 animation: none !important;
@@ -330,7 +402,7 @@
         </header>
 
         <!-- Greeting -->
-        <div class="text-center mb-10">
+        <div class="text-center mb-10 mobile-priority-1">
             <h2 id="personalGreeting" class="font-serif text-3xl font-medium mb-2" style="color: #1C1917;">Welcome back</h2>
             <p id="personalSubGreeting" class="text-base" style="color: #78716C;">Your wellness agents are ready. How can I help you today?</p>
             <button id="personalizeNameButton" type="button" onclick="setDisplayName()" class="mt-3 text-sm px-3 py-1.5 rounded-full transition-colors" style="border:1px solid #E7E5E4; color:#78716C;">
@@ -349,9 +421,94 @@
             <p id="profileEditStatus" class="text-sm mt-2" style="color:#78716C;">Using a friendly default for now—friend.</p>
         </div>
 
+        <nav class="sticky top-3 z-20 mb-12">
+            <div class="glass-card rounded-full px-3 py-2 flex flex-wrap justify-center gap-2">
+                <a href="#chat" class="subnav-chip">Chat</a>
+                <a href="#trends" class="subnav-chip">Trends</a>
+                <a href="#agents" class="subnav-chip">Agents</a>
+                <a href="#safety" class="subnav-chip">Safety</a>
+            </div>
+        </nav>
+
+        <main class="mobile-priority-flow">
+        <section id="chat" class="max-w-3xl mx-auto mb-16 mobile-priority-2">
+            <div class="section-header">
+                <p class="section-eyebrow">Ask VitalSync</p>
+                <h3 class="font-serif text-2xl" style="color:#1C1917;">What do you want to improve today?</h3>
+            </div>
+
+            <div class="flex flex-wrap gap-2 mb-4">
+                <button onclick="setQuickAction('heartrate')" class="pill" type="button">Heart Rate</button>
+                <button onclick="setQuickAction('sleep')" class="pill" type="button">Sleep</button>
+                <button onclick="setQuickAction('workout')" class="pill" type="button">Workout</button>
+                <button onclick="setQuickAction('stress')" class="pill" type="button">Stress</button>
+                <button onclick="setQuickAction('nutrition')" class="pill" type="button">Nutrition</button>
+                <button onclick="setQuickAction('challenge')" class="pill" type="button">7-Day Challenge</button>
+            </div>
+
+            <div class="input-field p-4">
+                <label for="userInput" class="sr-only">Message to VitalSync</label>
+                <textarea
+                    id="userInput"
+                    rows="3"
+                    class="w-full resize-none text-base bg-transparent border-none focus:outline-none focus:ring-0"
+                    style="color: #1C1917;"
+                    placeholder="Ask about your health metrics, request insights, or get wellness recommendations..."
+                ></textarea>
+                <div class="flex items-center justify-between mt-3 pt-3" style="border-top: 1px solid #E7E5E4;">
+                    <div class="flex items-center gap-2">
+                        <button id="attachDataButton" type="button" aria-label="Attach data file" title="Attach data file" class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                            <svg class="w-5 h-5" style="color: #A8A29E;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+                            </svg>
+                        </button>
+                        <button type="button" aria-label="Record voice prompt" title="Record voice prompt" class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                            <svg class="w-5 h-5" style="color: #A8A29E;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+                            </svg>
+                        </button>
+                        <select id="modelSelect" aria-label="Select local model" class="text-sm bg-transparent border border-[#E7E5E4] rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-amber-500/25" style="color: #78716C;">
+                            <option>llama3.2</option>
+                            <option>phi3</option>
+                            <option>qwen2.5</option>
+                        </select>
+                    </div>
+                    <button id="sendButton" type="button" onclick="processRequest()" class="btn-primary px-5 py-2 text-sm font-medium flex items-center gap-2">
+                        <span>Ask VitalSync</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <input id="metricsFileInput" type="file" accept=".json,application/json" class="hidden">
+        </section>
+
+        <div id="responseArea" class="max-w-3xl mx-auto mb-16 hidden mobile-priority-3">
+            <div class="section-header">
+                <p class="section-eyebrow">Response</p>
+                <h3 class="font-serif text-2xl" style="color:#1C1917;">Latest insight</h3>
+            </div>
+            <div class="fade-in">
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center" style="background: linear-gradient(135deg, #F1FEFF 0%, #E0F7FA 100%); border: 1px solid #003E6B;">
+                        <img src="logo.svg" alt="VitalSync" class="w-5 h-5">
+                    </div>
+                    <div class="flex-1">
+                        <div id="responseContent" role="status" aria-live="polite" class="text-base leading-relaxed whitespace-pre-wrap" style="color: #1C1917;"></div>
+                        <div id="responseMetadata" class="mt-3 flex items-center gap-4 text-sm" style="color: #A8A29E;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
         <!-- Viral Growth Layer -->
-        <section class="glass-card rounded-2xl p-5 mb-8">
+        <section class="glass-card rounded-2xl p-5 mb-16 mobile-priority-6">
+            <div class="section-header">
+                <p class="section-eyebrow">Momentum</p>
+                <h3 class="font-serif text-2xl" style="color:#1C1917;">Small daily wins compound quickly</h3>
+            </div>
             <div class="grid md:grid-cols-3 gap-5 items-center">
                 <div class="md:col-span-2">
                     <p class="text-xs uppercase tracking-[0.18em]" style="color: #A8A29E;">Momentum Engine</p>
@@ -369,7 +526,7 @@
                             <span id="momentumValue" class="relative z-10 font-semibold" style="color:#1C1917;">72</span>
                         </div>
                     </div>
-                    <button type="button" onclick="shareProgress()" class="btn-primary w-full mt-4 py-2 text-sm">Share progress card</button>
+                    <button type="button" onclick="shareProgress()" class="btn-secondary-muted w-full mt-4 py-2 text-sm">Share progress card</button>
                 </div>
             </div>
         </section>
@@ -382,7 +539,12 @@
             </div>
         </div>
 
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+        <section id="trends" class="mb-16 mobile-priority-4">
+            <div class="section-header">
+                <p class="section-eyebrow">Trends</p>
+                <h3 class="font-serif text-2xl" style="color:#1C1917;">Your recent wellness pattern</h3>
+            </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="trend-card">
                 <div class="flex items-center justify-between mb-2">
                     <p class="text-sm font-medium" style="color:#1C1917;">Heart Rate Trend</p>
@@ -404,72 +566,20 @@
                 </div>
                 <svg id="trendStress" class="trend-svg" viewBox="0 0 260 90" preserveAspectRatio="none" aria-label="Stress trend visualization"></svg>
             </div>
+        </div>
         </section>
 
-        <!-- Quick Actions -->
-        <div class="flex flex-wrap justify-center gap-3 mb-10">
-            <button onclick="setQuickAction('heartrate')" class="pill" type="button">Heart Rate</button>
-            <button onclick="setQuickAction('sleep')" class="pill" type="button">Sleep</button>
-            <button onclick="setQuickAction('workout')" class="pill" type="button">Workout</button>
-            <button onclick="setQuickAction('stress')" class="pill" type="button">Stress</button>
-            <button onclick="setQuickAction('nutrition')" class="pill" type="button">Nutrition</button>
-            <button onclick="setQuickAction('challenge')" class="pill" type="button">7-Day Challenge</button>
-        </div>
-
-        <!-- Main Input Area -->
-        <div class="max-w-3xl mx-auto mb-12">
-            <div class="input-field p-4">
-                <label for="userInput" class="sr-only">Message to VitalSync</label>
-                <textarea
-                    id="userInput"
-                    rows="3"
-                    class="w-full resize-none text-base bg-transparent border-none focus:outline-none focus:ring-0"
-                    style="color: #1C1917;"
-                    placeholder="Ask about your health metrics, request insights, or get wellness recommendations..."
-                ></textarea>
-                <div class="flex items-center justify-between mt-3 pt-3" style="border-top: 1px solid #E7E5E4;">
-                    <div class="flex items-center gap-2">
-                        <button id="attachDataButton" type="button" aria-label="Attach data file" title="Attach data file" class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
-                            <svg class="w-5 h-5" style="color: #A8A29E;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
-                            </svg>
-                        </button>
-                        <button type="button" aria-label="Record voice prompt" title="Record voice prompt" class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
-                            <svg class="w-5 h-5" style="color: #A8A29E;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
-                            </svg>
-</button>
-                        <select id="modelSelect" aria-label="Select local model" class="text-sm bg-transparent border border-[#E7E5E4] rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-amber-500/25" style="color: #78716C;">
-                            <option>llama3.2</option>
-                            <option>phi3</option>
-                            <option>qwen2.5</option>
-                        </select>
-                    </div>
-                    <button id="sendButton" type="button" onclick="processRequest()" class="btn-primary px-5 py-2 text-sm font-medium flex items-center gap-2">
-                        <span>Send</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                        </svg>
-                    </button>
+        <details id="agents" class="technical-details mb-16 mobile-priority-5" open>
+            <summary class="bg-white rounded-2xl border border-[#E7E5E4] p-5 flex items-center justify-between">
+                <div>
+                    <p class="section-eyebrow">Technical Details</p>
+                    <h3 class="font-serif text-2xl" style="color:#1C1917;">Agents, pipeline internals, schema & memory model</h3>
                 </div>
-            </div>
-            <input id="metricsFileInput" type="file" accept=".json,application/json" class="hidden">
-        </div>
-
-        <!-- Response Area -->
-        <div id="responseArea" class="max-w-3xl mx-auto mb-12 hidden">
-            <div class="fade-in">
-                <div class="flex items-start gap-4">
-                    <div class="w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center" style="background: linear-gradient(135deg, #F1FEFF 0%, #E0F7FA 100%); border: 1px solid #003E6B;">
-                        <img src="logo.svg" alt="VitalSync" class="w-5 h-5">
-                    </div>
-                    <div class="flex-1">
-                        <div id="responseContent" role="status" aria-live="polite" class="text-base leading-relaxed whitespace-pre-wrap" style="color: #1C1917;"></div>
-                        <div id="responseMetadata" class="mt-3 flex items-center gap-4 text-sm" style="color: #A8A29E;"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                <svg class="technical-chevron w-5 h-5" style="color:#78716C;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </summary>
+            <div class="mt-4">
 
         <!-- Agent Visualization -->
         <div id="agentViz" class="bg-white rounded-2xl border border-[#E7E5E4] p-6 mb-12">
@@ -668,10 +778,15 @@
                 </div>
             </div>
         </div>
+        </div>
+        </details>
 
         <!-- Safety Constraints -->
-        <div class="bg-white rounded-2xl border border-[#E7E5E4] p-5">
-            <h4 class="font-medium mb-4" style="color: #1C1917;">Active Safety Constraints</h4>
+        <section id="safety" class="bg-white rounded-2xl border border-[#E7E5E4] p-5 mb-16 mobile-priority-7">
+            <div class="section-header">
+                <p class="section-eyebrow">Safety</p>
+                <h3 class="font-serif text-2xl" style="color:#1C1917;">Active safety constraints</h3>
+            </div>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div class="p-3 rounded-xl" style="background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2);">
                     <div class="flex items-center gap-2 mb-2">
@@ -702,7 +817,9 @@
                     <p class="text-xs" style="color: #78716C;">Source grounding & confidence calibration</p>
                 </div>
             </div>
-        </div>
+        </section>
+
+        </main>
 
         <!-- Footer -->
         <footer class="text-center mt-12 py-6" style="border-top: 1px solid #E7E5E4;">
