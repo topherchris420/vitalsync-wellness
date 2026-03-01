@@ -1,5 +1,7 @@
 # VitalSync - Vers3Dynamics Local Wellness AI Platform
 
+![VitalSync Logo](logo.svg)
+
 A privacy-first multi-agent wellness system that runs entirely on your local device using Ollama for AI inference.
 
 ## Features
@@ -110,4 +112,4 @@ Batch push:
 
 ## License
 
-MIT
+This project is licensed under the MIT License. See [LICENSE](LICENSE).
