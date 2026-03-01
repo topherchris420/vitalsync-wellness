@@ -1,4 +1,4 @@
-# VitalSync - Local Wellness AI Platform
+# VitalSync - Vers3Dynamics Local Wellness AI Platform
 
 A privacy-first multi-agent wellness system that runs entirely on your local device using Ollama for AI inference.
 
@@ -6,7 +6,6 @@ A privacy-first multi-agent wellness system that runs entirely on your local dev
 
 - **Local-First Architecture**: All data stays on your device - no cloud processing
 - **5 Specialized Agents**: Signal Ingestion, User Modeling, Interpretation, Feedback Generation, Safety Supervisor
-- **Claude-Inspired UI**: Clean, minimalist design
 - **Ollama Integration**: Uses local LLMs (llama3.2, phi3, qwen2.5)
 
 ## Architecture
