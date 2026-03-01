@@ -82,9 +82,13 @@
 
         /* Agent cards */
         .agent-card {
+            appearance: none;
             background: white;
             border: 1px solid var(--border);
             border-radius: 16px;
+            cursor: pointer;
+            display: block;
+            width: 100%;
             transition: all 0.3s ease;
         }
         .agent-card:hover {
@@ -94,6 +98,26 @@
         .agent-card.active {
             border-color: var(--accent);
             box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
+        }
+
+        .agent-card:focus-visible,
+        .pill:focus-visible,
+        .challenge-card:focus-visible,
+        .viz-control:focus-visible {
+            outline: 3px solid rgba(217, 119, 6, 0.35);
+            outline-offset: 2px;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.15);
+        }
+
+        .agent-node:focus-visible {
+            outline: none;
+        }
+
+        .agent-node:focus-visible rect {
+            stroke: var(--accent);
+            stroke-width: 3;
+            filter: drop-shadow(0 0 2px rgba(217, 119, 6, 0.55));
         }
         .agent-card.processing {
             animation: pulse 1.5s infinite;
@@ -216,6 +240,38 @@
             100% { opacity: 0; transform: translateY(-120px) scale(1.3); }
         }
 
+        .share-action-btn {
+            border: 1px solid rgba(251, 191, 36, 0.28);
+            border-radius: 10px;
+            padding: 8px 12px;
+            font-size: 13px;
+            font-weight: 500;
+            background: rgba(15, 23, 42, 0.35);
+            color: #f8fafc;
+            transition: all 0.2s ease;
+        }
+
+        .share-action-btn:hover {
+            background: rgba(217, 119, 6, 0.28);
+            border-color: rgba(251, 191, 36, 0.5);
+        }
+
+        .share-action-btn.completed {
+            background: rgba(34, 197, 94, 0.2);
+            border-color: rgba(74, 222, 128, 0.85);
+            color: #dcfce7;
+        }
+
+        .share-card-reward {
+            animation: rewardPulse 0.8s ease;
+        }
+
+        @keyframes rewardPulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 rgba(251, 191, 36, 0); }
+            35% { transform: scale(1.01); box-shadow: 0 0 0 10px rgba(251, 191, 36, 0.2); }
+            100% { transform: scale(1); box-shadow: 0 0 0 rgba(251, 191, 36, 0); }
+        }
+
         .sr-only {
             position: absolute;
             width: 1px;
@@ -286,6 +342,78 @@
             border-color: #22c55e;
         }
 
+        .section-header {
+            margin-bottom: 14px;
+        }
+
+        .section-eyebrow {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            color: var(--text-tertiary);
+        }
+
+        .subnav-chip {
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 999px;
+            padding: 7px 14px;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .subnav-chip:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .btn-secondary-muted {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: #fff;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary-muted:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .technical-details summary {
+            list-style: none;
+            cursor: pointer;
+        }
+
+        .technical-details summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .technical-details[open] .technical-chevron {
+            transform: rotate(180deg);
+        }
+
+        .technical-chevron {
+            transition: transform 0.2s ease;
+        }
+
+        @media (max-width: 767px) {
+            .mobile-priority-flow {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .mobile-priority-1 { order: 1; }
+            .mobile-priority-2 { order: 2; }
+            .mobile-priority-3 { order: 3; }
+            .mobile-priority-4 { order: 4; }
+            .mobile-priority-5 { order: 5; }
+            .mobile-priority-6 { order: 6; }
+            .mobile-priority-7 { order: 7; }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             * {
                 animation: none !important;
@@ -326,83 +454,50 @@
         </header>
 
         <!-- Greeting -->
-        <div class="text-center mb-10">
+        <div class="text-center mb-10 mobile-priority-1">
             <h2 id="personalGreeting" class="font-serif text-3xl font-medium mb-2" style="color: #1C1917;">Welcome back</h2>
             <p id="personalSubGreeting" class="text-base" style="color: #78716C;">Your wellness agents are ready. How can I help you today?</p>
-            <button type="button" onclick="setDisplayName()" class="mt-3 text-sm px-3 py-1.5 rounded-full transition-colors" style="border:1px solid #E7E5E4; color:#78716C;">
+            <button id="personalizeNameButton" type="button" onclick="setDisplayName()" class="mt-3 text-sm px-3 py-1.5 rounded-full transition-colors" style="border:1px solid #E7E5E4; color:#78716C;">
                 Personalize name
             </button>
-        </div>
-
-
-        <!-- Viral Growth Layer -->
-        <section class="glass-card rounded-2xl p-5 mb-8">
-            <div class="grid md:grid-cols-3 gap-5 items-center">
-                <div class="md:col-span-2">
-                    <p class="text-xs uppercase tracking-[0.18em]" style="color: #A8A29E;">Momentum Engine</p>
-                    <h3 class="font-serif text-2xl mt-1" style="color: #1C1917;">Build streaks. Complete micro-challenges. Share wins.</h3>
-                    <p class="text-sm mt-2" style="color: #78716C;">Designed to feel rewarding in under 60 seconds a day for habit loops and social sharing.</p>
-                    <div id="challengeGrid" class="grid sm:grid-cols-2 gap-3 mt-4"></div>
-                </div>
-                <div class="rounded-xl p-4" style="background:#fff; border:1px solid #E7E5E4;">
-                    <div class="flex justify-between items-center mb-3">
-                        <span class="text-sm" style="color:#78716C;">Wellness Momentum</span>
-                        <span id="streakCount" class="text-sm font-medium" style="color:#D97706;">Streak: 4 days</span>
+            <div id="profileEditor" class="mt-3 hidden max-w-sm mx-auto text-left" style="border:1px solid #E7E5E4; background:#fff; border-radius: 12px;">
+                <div class="p-3">
+                    <label for="displayNameInput" class="block text-xs mb-1" style="color:#78716C;">What should VitalSync call you?</label>
+                    <input id="displayNameInput" type="text" maxlength="80" class="w-full px-3 py-2 rounded-lg text-sm" style="border:1px solid #E7E5E4; color:#1C1917;" placeholder="Alex">
+                    <div class="flex items-center gap-2 mt-3">
+                        <button type="button" onclick="saveDisplayName()" class="btn-primary px-3 py-1.5 text-sm">Save</button>
+                        <button type="button" onclick="cancelDisplayNameEdit()" class="text-sm px-3 py-1.5 rounded-full transition-colors" style="border:1px solid #E7E5E4; color:#78716C;">Cancel</button>
                     </div>
-                    <div class="flex items-center justify-center relative">
-                        <div id="momentumRing" class="momentum-ring relative" style="--score: 72;">
-                            <span id="momentumValue" class="relative z-10 font-semibold" style="color:#1C1917;">72</span>
-                        </div>
-                    </div>
-                    <button type="button" onclick="shareProgress()" class="btn-primary w-full mt-4 py-2 text-sm">Share progress card</button>
                 </div>
             </div>
-        </section>
-
-        <div id="shareCard" class="max-w-2xl mx-auto mb-8 hidden">
-            <div class="rounded-2xl p-5" style="background:linear-gradient(135deg,#111827 0%, #1f2937 100%); color:#fff;">
-                <p class="text-xs tracking-[0.2em] uppercase text-amber-300">VitalSync Weekly Pulse</p>
-                <h3 class="font-serif text-2xl mt-2">I improved my wellness momentum by <span id="shareGain" class="text-amber-300">+12%</span> this week.</h3>
-                <p id="shareMessage" class="text-sm mt-3 text-slate-300">Small actions compound. Join me on a 7-day reset challenge.</p>
-            </div>
+            <p id="profileEditStatus" class="text-sm mt-2" style="color:#78716C;">Using a friendly default for now—friend.</p>
         </div>
 
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
-            <div class="trend-card">
-                <div class="flex items-center justify-between mb-2">
-                    <p class="text-sm font-medium" style="color:#1C1917;">Heart Rate Trend</p>
-                    <span id="hrTrendDelta" class="text-xs" style="color:#78716C;">+0 bpm</span>
-                </div>
-                <svg id="trendHeartRate" class="trend-svg" viewBox="0 0 260 90" preserveAspectRatio="none" aria-label="Heart rate trend visualization"></svg>
+        <nav class="sticky top-3 z-20 mb-12">
+            <div class="glass-card rounded-full px-3 py-2 flex flex-wrap justify-center gap-2">
+                <a href="#chat" class="subnav-chip">Chat</a>
+                <a href="#trends" class="subnav-chip">Trends</a>
+                <a href="#agents" class="subnav-chip">Agents</a>
+                <a href="#safety" class="subnav-chip">Safety</a>
             </div>
-            <div class="trend-card">
-                <div class="flex items-center justify-between mb-2">
-                    <p class="text-sm font-medium" style="color:#1C1917;">Sleep Duration</p>
-                    <span id="sleepTrendDelta" class="text-xs" style="color:#78716C;">+0.0 hr</span>
-                </div>
-                <svg id="trendSleep" class="trend-svg" viewBox="0 0 260 90" preserveAspectRatio="none" aria-label="Sleep trend visualization"></svg>
-            </div>
-            <div class="trend-card">
-                <div class="flex items-center justify-between mb-2">
-                    <p class="text-sm font-medium" style="color:#1C1917;">Stress Index</p>
-                    <span id="stressTrendDelta" class="text-xs" style="color:#78716C;">-0 pts</span>
-                </div>
-                <svg id="trendStress" class="trend-svg" viewBox="0 0 260 90" preserveAspectRatio="none" aria-label="Stress trend visualization"></svg>
-            </div>
-        </section>
+        </nav>
 
-        <!-- Quick Actions -->
-        <div class="flex flex-wrap justify-center gap-3 mb-10">
-            <button onclick="setQuickAction('heartrate')" class="pill" type="button">Heart Rate</button>
-            <button onclick="setQuickAction('sleep')" class="pill" type="button">Sleep</button>
-            <button onclick="setQuickAction('workout')" class="pill" type="button">Workout</button>
-            <button onclick="setQuickAction('stress')" class="pill" type="button">Stress</button>
-            <button onclick="setQuickAction('nutrition')" class="pill" type="button">Nutrition</button>
-            <button onclick="setQuickAction('challenge')" class="pill" type="button">7-Day Challenge</button>
-        </div>
+        <main class="mobile-priority-flow">
+        <section id="chat" class="max-w-3xl mx-auto mb-16 mobile-priority-2">
+            <div class="section-header">
+                <p class="section-eyebrow">Ask VitalSync</p>
+                <h3 class="font-serif text-2xl" style="color:#1C1917;">What do you want to improve today?</h3>
+            </div>
 
-        <!-- Main Input Area -->
-        <div class="max-w-3xl mx-auto mb-12">
+            <div class="flex flex-wrap gap-2 mb-4">
+                <button onclick="setQuickAction('heartrate')" class="pill" type="button">Heart Rate</button>
+                <button onclick="setQuickAction('sleep')" class="pill" type="button">Sleep</button>
+                <button onclick="setQuickAction('workout')" class="pill" type="button">Workout</button>
+                <button onclick="setQuickAction('stress')" class="pill" type="button">Stress</button>
+                <button onclick="setQuickAction('nutrition')" class="pill" type="button">Nutrition</button>
+                <button onclick="setQuickAction('challenge')" class="pill" type="button">7-Day Challenge</button>
+            </div>
+
             <div class="input-field p-4">
                 <label for="userInput" class="sr-only">Message to VitalSync</label>
                 <textarea
@@ -423,18 +518,15 @@
                             <svg class="w-5 h-5" style="color: #A8A29E;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
                             </svg>
-</button>
-                        <div class="flex flex-col gap-1">
-                            <select id="modelSelect" aria-label="Select local model" class="text-sm bg-transparent border border-[#E7E5E4] rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-amber-500/25" style="color: #78716C;">
-                                <option>llama3.2</option>
-                                <option>phi3</option>
-                                <option>qwen2.5</option>
-                            </select>
-                            <p id="modelHint" class="text-xs" style="color:#A8A29E;">Tip: run <span class="font-mono">ollama pull <span id="modelHintName">llama3.2</span></span> if this model is missing.</p>
-                        </div>
+                        </button>
+                        <select id="modelSelect" aria-label="Select local model" class="text-sm bg-transparent border border-[#E7E5E4] rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-amber-500/25" style="color: #78716C;">
+                            <option>llama3.2</option>
+                            <option>phi3</option>
+                            <option>qwen2.5</option>
+                        </select>
                     </div>
                     <button id="sendButton" type="button" onclick="processRequest()" class="btn-primary px-5 py-2 text-sm font-medium flex items-center gap-2">
-                        <span>Send</span>
+                        <span>Ask VitalSync</span>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
                         </svg>
@@ -442,10 +534,13 @@
                 </div>
             </div>
             <input id="metricsFileInput" type="file" accept=".json,application/json" class="hidden">
-        </div>
+        </section>
 
-        <!-- Response Area -->
-        <div id="responseArea" class="max-w-3xl mx-auto mb-12 hidden">
+        <div id="responseArea" class="max-w-3xl mx-auto mb-16 hidden mobile-priority-3">
+            <div class="section-header">
+                <p class="section-eyebrow">Response</p>
+                <h3 class="font-serif text-2xl" style="color:#1C1917;">Latest insight</h3>
+            </div>
             <div class="fade-in">
                 <div class="flex items-start gap-4">
                     <div class="w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center" style="background: linear-gradient(135deg, #F1FEFF 0%, #E0F7FA 100%); border: 1px solid #003E6B;">
@@ -474,11 +569,100 @@
             </div>
         </div>
 
+
+        <!-- Viral Growth Layer -->
+        <section class="glass-card rounded-2xl p-5 mb-16 mobile-priority-6">
+            <div class="section-header">
+                <p class="section-eyebrow">Momentum</p>
+                <h3 class="font-serif text-2xl" style="color:#1C1917;">Small daily wins compound quickly</h3>
+            </div>
+            <div class="grid md:grid-cols-3 gap-5 items-center">
+                <div class="md:col-span-2">
+                    <p class="text-xs uppercase tracking-[0.18em]" style="color: #A8A29E;">Momentum Engine</p>
+                    <h3 class="font-serif text-2xl mt-1" style="color: #1C1917;">Build streaks. Complete micro-challenges. Share wins.</h3>
+                    <p class="text-sm mt-2" style="color: #78716C;">Designed to feel rewarding in under 60 seconds a day for habit loops and social sharing.</p>
+                    <div id="challengeGrid" class="grid sm:grid-cols-2 gap-3 mt-4"></div>
+                </div>
+                <div class="rounded-xl p-4" style="background:#fff; border:1px solid #E7E5E4;">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-sm" style="color:#78716C;">Wellness Momentum</span>
+                        <span id="streakCount" class="text-sm font-medium" style="color:#D97706;">Streak: 4 days</span>
+                    </div>
+                    <div class="flex items-center justify-center relative">
+                        <div id="momentumRing" class="momentum-ring relative" style="--score: 72;">
+                            <span id="momentumValue" class="relative z-10 font-semibold" style="color:#1C1917;">72</span>
+                        </div>
+                    </div>
+                    <button type="button" onclick="shareProgress()" class="btn-secondary-muted w-full mt-4 py-2 text-sm">Share progress card</button>
+                </div>
+            </div>
+        </section>
+
+        <div id="shareCard" class="max-w-2xl mx-auto mb-8 hidden">
+            <div id="shareCardVisual" class="rounded-2xl p-5" style="background:linear-gradient(135deg,#111827 0%, #1f2937 100%); color:#fff;">
+                <p class="text-xs tracking-[0.2em] uppercase text-amber-300">VitalSync Weekly Pulse</p>
+                <h3 class="font-serif text-2xl mt-2">I improved my wellness momentum by <span id="shareGain" class="text-amber-300">+12%</span> this week.</h3>
+                <p id="shareMessage" class="text-sm mt-3 text-slate-300">Small actions compound. Join me on a 7-day reset challenge.</p>
+                <p id="shareMeta" class="text-xs mt-3 text-slate-400">Week 01 • Generated Mon 08:15</p>
+            </div>
+            <div class="rounded-xl mt-3 p-3" style="background:#fff; border:1px solid #E7E5E4;">
+                <div class="flex flex-wrap gap-2">
+                    <button id="copyTextBtn" type="button" class="share-action-btn" onclick="handleShareAction('copyText')">Copy text</button>
+                    <button id="copySummaryBtn" type="button" class="share-action-btn" onclick="handleShareAction('copySummary')">Copy image-ready summary</button>
+                    <button id="downloadCardBtn" type="button" class="share-action-btn" onclick="handleShareAction('downloadCard')">Download card</button>
+                </div>
+                <p id="shareActionToast" class="text-xs mt-2 hidden" style="color:#166534;"></p>
+                <p id="shareRewardState" class="text-xs mt-1" style="color:#78716C;">Complete all 3 actions to lock your weekly share streak bonus.</p>
+            </div>
+        </div>
+
+        <section id="trends" class="mb-16 mobile-priority-4">
+            <div class="section-header">
+                <p class="section-eyebrow">Trends</p>
+                <h3 class="font-serif text-2xl" style="color:#1C1917;">Your recent wellness pattern</h3>
+            </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="trend-card">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-sm font-medium" style="color:#1C1917;">Heart Rate Trend</p>
+                    <span id="hrTrendDelta" class="text-xs" style="color:#78716C;">+0 bpm</span>
+                </div>
+                <svg id="trendHeartRate" class="trend-svg" viewBox="0 0 260 90" preserveAspectRatio="none" aria-label="Heart rate trend visualization"></svg>
+            </div>
+            <div class="trend-card">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-sm font-medium" style="color:#1C1917;">Sleep Duration</p>
+                    <span id="sleepTrendDelta" class="text-xs" style="color:#78716C;">+0.0 hr</span>
+                </div>
+                <svg id="trendSleep" class="trend-svg" viewBox="0 0 260 90" preserveAspectRatio="none" aria-label="Sleep trend visualization"></svg>
+            </div>
+            <div class="trend-card">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-sm font-medium" style="color:#1C1917;">Stress Index</p>
+                    <span id="stressTrendDelta" class="text-xs" style="color:#78716C;">-0 pts</span>
+                </div>
+                <svg id="trendStress" class="trend-svg" viewBox="0 0 260 90" preserveAspectRatio="none" aria-label="Stress trend visualization"></svg>
+            </div>
+        </div>
+        </section>
+
+        <details id="agents" class="technical-details mb-16 mobile-priority-5" open>
+            <summary class="bg-white rounded-2xl border border-[#E7E5E4] p-5 flex items-center justify-between">
+                <div>
+                    <p class="section-eyebrow">Technical Details</p>
+                    <h3 class="font-serif text-2xl" style="color:#1C1917;">Agents, pipeline internals, schema & memory model</h3>
+                </div>
+                <svg class="technical-chevron w-5 h-5" style="color:#78716C;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </summary>
+            <div class="mt-4">
+
         <!-- Agent Visualization -->
         <div id="agentViz" class="bg-white rounded-2xl border border-[#E7E5E4] p-6 mb-12">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="font-serif text-xl font-medium" style="color: #1C1917;">Agent Orchestration</h3>
-                <button id="vizToggleButton" type="button" aria-expanded="true" onclick="toggleViz()" class="text-sm" style="color: #78716C;">Hide View</button>
+                <button id="vizToggleButton" type="button" aria-expanded="true" onclick="toggleViz()" class="text-sm viz-control" style="color: #78716C;">Hide View</button>
             </div>
 
             <div id="agentVizContent">
@@ -495,35 +679,35 @@
 
                 <!-- Agent Nodes -->
                 <!-- Signal Ingestion -->
-                <g id="node-signal" class="cursor-pointer" onclick="selectAgent('signal')">
+                <g id="node-signal" class="cursor-pointer agent-node" onclick="selectAgent('signal')">
                     <rect x="60" y="170" width="120" height="70" rx="12" fill="white" stroke="#E7E5E4" stroke-width="2"/>
                     <text x="120" y="195" text-anchor="middle" font-size="11" fill="#78716C">Signal Ingestion</text>
                     <text x="120" y="215" text-anchor="middle" font-size="9" fill="#A8A29E">Data Normalization</text>
                 </g>
 
                 <!-- Interpretation -->
-                <g id="node-interpretation" class="cursor-pointer" onclick="selectAgent('interpretation')">
+                <g id="node-interpretation" class="cursor-pointer agent-node" onclick="selectAgent('interpretation')">
                     <rect x="340" y="40" width="120" height="70" rx="12" fill="white" stroke="#E7E5E4" stroke-width="2"/>
                     <text x="400" y="65" text-anchor="middle" font-size="11" fill="#78716C">Interpretation</text>
                     <text x="400" y="85" text-anchor="middle" font-size="9" fill="#A8A29E">Pattern Analysis</text>
                 </g>
 
                 <!-- Feedback Generation -->
-                <g id="node-feedback" class="cursor-pointer" onclick="selectAgent('feedback')">
+                <g id="node-feedback" class="cursor-pointer agent-node" onclick="selectAgent('feedback')">
                     <rect x="620" y="170" width="120" height="70" rx="12" fill="white" stroke="#E7E5E4" stroke-width="2"/>
                     <text x="680" y="195" text-anchor="middle" font-size="11" fill="#78716C">Feedback Gen</text>
                     <text x="680" y="215" text-anchor="middle" font-size="9" fill="#A8A29E">Response</text>
                 </g>
 
                 <!-- User Modeling -->
-                <g id="node-modeling" class="cursor-pointer" onclick="selectAgent('modeling')">
+                <g id="node-modeling" class="cursor-pointer agent-node" onclick="selectAgent('modeling')">
                     <rect x="460" y="210" width="120" height="70" rx="12" fill="white" stroke="#E7E5E4" stroke-width="2"/>
                     <text x="520" y="235" text-anchor="middle" font-size="11" fill="#78716C">User Modeling</text>
                     <text x="520" y="255" text-anchor="middle" font-size="9" fill="#A8A29E">Digital Twin</text>
                 </g>
 
                 <!-- Safety Supervisor -->
-                <g id="node-safety" class="cursor-pointer" onclick="selectAgent('safety')">
+                <g id="node-safety" class="cursor-pointer agent-node" onclick="selectAgent('safety')">
                     <rect x="180" y="210" width="120" height="70" rx="12" fill="white" stroke="#E7E5E4" stroke-width="2"/>
                     <text x="240" y="235" text-anchor="middle" font-size="11" fill="#78716C">Safety</text>
                     <text x="240" y="255" text-anchor="middle" font-size="9" fill="#A8A29E">Guardrail</text>
@@ -532,7 +716,7 @@
 
             <!-- Agent Cards Grid -->
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mt-6">
-                <div id="agent-signal" class="agent-card p-4 text-center cursor-pointer" onclick="selectAgent('signal')">
+                <button id="agent-signal" class="agent-card p-4 text-center" type="button" onclick="selectAgent('signal')">
                     <div class="w-10 h-10 mx-auto mb-2 rounded-lg flex items-center justify-center" style="background: rgba(59, 130, 246, 0.1);">
                         <svg class="w-5 h-5" style="color: #3b82f6;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
@@ -540,9 +724,9 @@
                     </div>
                     <p class="text-xs font-medium" style="color: #78716C;">Signal</p>
                     <p class="text-[10px]" style="color: #A8A29E;">Ingestion</p>
-                </div>
+                </button>
 
-                <div id="agent-modeling" class="agent-card p-4 text-center cursor-pointer" onclick="selectAgent('modeling')">
+                <button id="agent-modeling" class="agent-card p-4 text-center" type="button" onclick="selectAgent('modeling')">
                     <div class="w-10 h-10 mx-auto mb-2 rounded-lg flex items-center justify-center" style="background: rgba(6, 182, 212, 0.1);">
                         <svg class="w-5 h-5" style="color: #06b6d4;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
@@ -550,9 +734,9 @@
                     </div>
                     <p class="text-xs font-medium" style="color: #78716C;">User</p>
                     <p class="text-[10px]" style="color: #A8A29E;">Modeling</p>
-                </div>
+                </button>
 
-                <div id="agent-interpretation" class="agent-card p-4 text-center cursor-pointer" onclick="selectAgent('interpretation')">
+                <button id="agent-interpretation" class="agent-card p-4 text-center" type="button" onclick="selectAgent('interpretation')">
                     <div class="w-10 h-10 mx-auto mb-2 rounded-lg flex items-center justify-center" style="background: rgba(139, 92, 246, 0.1);">
                         <svg class="w-5 h-5" style="color: #8b5cf6;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
@@ -560,9 +744,9 @@
                     </div>
                     <p class="text-xs font-medium" style="color: #78716C;">Interpretation</p>
                     <p class="text-[10px]" style="color: #A8A29E;">Analysis</p>
-                </div>
+                </button>
 
-                <div id="agent-feedback" class="agent-card p-4 text-center cursor-pointer" onclick="selectAgent('feedback')">
+                <button id="agent-feedback" class="agent-card p-4 text-center" type="button" onclick="selectAgent('feedback')">
                     <div class="w-10 h-10 mx-auto mb-2 rounded-lg flex items-center justify-center" style="background: rgba(245, 158, 11, 0.1);">
                         <svg class="w-5 h-5" style="color: #f59e0b;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
@@ -570,9 +754,9 @@
                     </div>
                     <p class="text-xs font-medium" style="color: #78716C;">Feedback</p>
                     <p class="text-[10px]" style="color: #A8A29E;">Generation</p>
-                </div>
+                </button>
 
-                <div id="agent-safety" class="agent-card p-4 text-center cursor-pointer" onclick="selectAgent('safety')">
+                <button id="agent-safety" class="agent-card p-4 text-center" type="button" onclick="selectAgent('safety')">
                     <div class="w-10 h-10 mx-auto mb-2 rounded-lg flex items-center justify-center" style="background: rgba(34, 197, 94, 0.1);">
                         <svg class="w-5 h-5" style="color: #22c55e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
@@ -580,7 +764,7 @@
                     </div>
                     <p class="text-xs font-medium" style="color: #78716C;">Safety</p>
                     <p class="text-[10px]" style="color: #A8A29E;">Supervisor</p>
-                </div>
+                </button>
             </div>
 
             <div class="mt-6">
@@ -671,10 +855,15 @@
                 </div>
             </div>
         </div>
+        </div>
+        </details>
 
         <!-- Safety Constraints -->
-        <div class="bg-white rounded-2xl border border-[#E7E5E4] p-5">
-            <h4 class="font-medium mb-4" style="color: #1C1917;">Active Safety Constraints</h4>
+        <section id="safety" class="bg-white rounded-2xl border border-[#E7E5E4] p-5 mb-16 mobile-priority-7">
+            <div class="section-header">
+                <p class="section-eyebrow">Safety</p>
+                <h3 class="font-serif text-2xl" style="color:#1C1917;">Active safety constraints</h3>
+            </div>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div class="p-3 rounded-xl" style="background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2);">
                     <div class="flex items-center gap-2 mb-2">
@@ -705,7 +894,9 @@
                     <p class="text-xs" style="color: #78716C;">Source grounding & confidence calibration</p>
                 </div>
             </div>
-        </div>
+        </section>
+
+        </main>
 
         <!-- Footer -->
         <footer class="text-center mt-12 py-6" style="border-top: 1px solid #E7E5E4;">
@@ -737,6 +928,15 @@
             heartRate: [66, 67, 69, 71, 70, 68, 67],
             sleep: [5.9, 6.1, 6.0, 6.2, 6.5, 6.4, 6.6],
             stress: [58, 56, 60, 54, 52, 49, 47]
+        };
+
+        const shareState = {
+            completedActions: new Set(),
+            streakBonus: 0,
+            toastTimer: null,
+            weekSeed: null,
+            textSummary: '',
+            imageSummary: ''
         };
 
         function sleep(ms) {
@@ -934,6 +1134,23 @@
             return localStorage.getItem('vitalsyncUserName') || 'friend';
         }
 
+        function sanitizeDisplayName(name) {
+            return name.trim().replace(/\s+/g, ' ');
+        }
+
+        function updateProfileStatus(message) {
+            const statusEl = document.getElementById('profileEditStatus');
+            if (statusEl) statusEl.textContent = message;
+        }
+
+        function updateProfileStatusFromName(name) {
+            if (name === 'friend') {
+                updateProfileStatus('Using a friendly default for now—friend.');
+                return;
+            }
+            updateProfileStatus(`Saved. Nice to meet you, ${name.split(' ')[0]}.`);
+        }
+
         function refreshGreeting() {
             const greetingEl = document.getElementById('personalGreeting');
             const subGreetingEl = document.getElementById('personalSubGreeting');
@@ -944,16 +1161,45 @@
         }
 
         function setDisplayName() {
-            const currentName = getDisplayName() === 'friend' ? '' : getDisplayName();
-            const nextName = window.prompt('What should VitalSync call you?', currentName);
-            if (nextName === null) return;
-            const sanitized = nextName.trim().replace(/\s+/g, ' ');
+            const profileEditor = document.getElementById('profileEditor');
+            const personalizeButton = document.getElementById('personalizeNameButton');
+            const displayNameInput = document.getElementById('displayNameInput');
+            const currentName = getDisplayName();
+            if (displayNameInput) {
+                displayNameInput.value = currentName === 'friend' ? '' : currentName;
+                displayNameInput.focus();
+                displayNameInput.select();
+            }
+            if (profileEditor) profileEditor.classList.remove('hidden');
+            if (personalizeButton) personalizeButton.classList.add('hidden');
+            updateProfileStatus('Choose the name you want VitalSync to use.');
+        }
+
+        function saveDisplayName() {
+            const displayNameInput = document.getElementById('displayNameInput');
+            const sanitized = sanitizeDisplayName(displayNameInput?.value || '');
             if (!sanitized) {
                 localStorage.removeItem('vitalsyncUserName');
+                updateProfileStatus('Saved. We\'ll keep calling you friend for now.');
             } else {
                 localStorage.setItem('vitalsyncUserName', sanitized);
+                updateProfileStatus(`Saved. Nice to meet you, ${sanitized.split(' ')[0]}.`);
             }
+            closeDisplayNameEditor();
             refreshGreeting();
+        }
+
+        function cancelDisplayNameEdit() {
+            closeDisplayNameEditor();
+            updateProfileStatusFromName(getDisplayName());
+            refreshGreeting();
+        }
+
+        function closeDisplayNameEditor() {
+            const profileEditor = document.getElementById('profileEditor');
+            const personalizeButton = document.getElementById('personalizeNameButton');
+            if (profileEditor) profileEditor.classList.add('hidden');
+            if (personalizeButton) personalizeButton.classList.remove('hidden');
         }
 
         // Agent memory data
@@ -1012,7 +1258,10 @@
             const streak = document.getElementById('streakCount');
             if (ring) ring.style.setProperty('--score', momentumScore);
             if (value) value.textContent = momentumScore;
-            if (streak) streak.textContent = `Streak: ${Math.max(4, Math.floor(momentumScore / 14))} days`;
+            if (streak) {
+                const baseStreak = Math.max(4, Math.floor(momentumScore / 14));
+                streak.textContent = `Streak: ${baseStreak + shareState.streakBonus} days`;
+            }
         }
 
         function launchFloatingReaction(symbol) {
@@ -1023,22 +1272,210 @@
             setTimeout(() => bubble.remove(), 1200);
         }
 
+        function launchShareConfetti() {
+            ['🎉', '✨', '✅', '🔥', '💪', '🌟'].forEach((symbol, index) => {
+                setTimeout(() => launchFloatingReaction(symbol), index * 90);
+            });
+        }
+
+        function getWeekMeta() {
+            const now = new Date();
+            const day = now.getDay();
+            const mondayOffset = day === 0 ? -6 : 1 - day;
+            const weekStart = new Date(now);
+            weekStart.setDate(now.getDate() + mondayOffset);
+            weekStart.setHours(0, 0, 0, 0);
+            const yearStart = new Date(weekStart.getFullYear(), 0, 1);
+            const weekNumber = Math.ceil((((weekStart - yearStart) / 86400000) + yearStart.getDay() + 1) / 7);
+            return { weekStart, weekNumber };
+        }
+
+        function getDeterministicGeneratedLabel() {
+            const { weekStart, weekNumber } = getWeekMeta();
+            const firstName = getDisplayName().split(' ')[0];
+            const seed = `${weekStart.toISOString().slice(0, 10)}:${firstName.toLowerCase()}:${momentumScore}`;
+            if (shareState.weekSeed !== seed) {
+                shareState.weekSeed = seed;
+            }
+
+            let hash = 0;
+            for (let i = 0; i < seed.length; i += 1) {
+                hash = (hash * 31 + seed.charCodeAt(i)) % 100000;
+            }
+
+            const deterministicHour = 6 + (hash % 12);
+            const deterministicMinute = (hash % 4) * 15;
+            const generated = new Date(weekStart);
+            generated.setDate(weekStart.getDate() + (hash % 7));
+            generated.setHours(deterministicHour, deterministicMinute, 0, 0);
+
+            const weekLabel = `Week ${String(weekNumber).padStart(2, '0')} (${weekStart.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })})`;
+            const generatedLabel = generated.toLocaleString(undefined, {
+                weekday: 'short',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            return `${weekLabel} • Generated ${generatedLabel}`;
+        }
+
+        function buildShareContent() {
+            const gain = Math.max(4, Math.round(momentumScore / 6));
+            const target = Math.min(99, momentumScore + 8);
+            const label = getDeterministicGeneratedLabel();
+            const firstName = getDisplayName().split(' ')[0];
+            const textSummary = `I improved my wellness momentum by +${gain}% this week. Current score: ${momentumScore}. Next goal: ${target} by Sunday. #VitalSync`;
+            const imageSummary = [
+                'VitalSync Weekly Pulse',
+                `${firstName}'s Momentum Update`,
+                `Momentum Gain: +${gain}%`,
+                `Current Score: ${momentumScore}/99`,
+                `Next Goal: ${target} by Sunday`,
+                label
+            ].join('\n');
+            return { gain, target, label, textSummary, imageSummary };
+        }
+
+        function showShareToast(message, isError) {
+            const toast = document.getElementById('shareActionToast');
+            if (!toast) return;
+            toast.classList.remove('hidden');
+            toast.style.color = isError ? '#b91c1c' : '#166534';
+            toast.textContent = message;
+            if (shareState.toastTimer) clearTimeout(shareState.toastTimer);
+            shareState.toastTimer = setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 2200);
+        }
+
+        async function copyToClipboard(content) {
+            if (!navigator.clipboard || !navigator.clipboard.writeText) return false;
+            await navigator.clipboard.writeText(content);
+            return true;
+        }
+
+        async function maybeNativeShare(content, title) {
+            if (!navigator.share) return false;
+            try {
+                await navigator.share({ title, text: content });
+                return true;
+            } catch (error) {
+                return false;
+            }
+        }
+
+        function markShareActionComplete(action, rewardMessage) {
+            if (shareState.completedActions.has(action)) return;
+            shareState.completedActions.add(action);
+            if (shareState.streakBonus < 3) {
+                shareState.streakBonus += 1;
+                momentumScore = Math.min(99, momentumScore + 1);
+                updateMomentumUI();
+            }
+
+            const buttonIds = {
+                copyText: 'copyTextBtn',
+                copySummary: 'copySummaryBtn',
+                downloadCard: 'downloadCardBtn'
+            };
+            const button = document.getElementById(buttonIds[action]);
+            if (button) {
+                button.classList.add('completed');
+                button.textContent = `✓ ${button.textContent.replace(/^✓\s*/, '')}`;
+            }
+
+            const reward = document.getElementById('shareRewardState');
+            const progress = `${shareState.completedActions.size}/3`;
+            if (reward) {
+                reward.textContent = `Share actions completed: ${progress}. ${rewardMessage}`;
+            }
+
+            const visual = document.getElementById('shareCardVisual');
+            if (visual) {
+                visual.classList.remove('share-card-reward');
+                void visual.offsetWidth;
+                visual.classList.add('share-card-reward');
+            }
+            launchShareConfetti();
+        }
+
+        async function handleShareAction(action) {
+            const { textSummary, imageSummary } = buildShareContent();
+            shareState.textSummary = textSummary;
+            shareState.imageSummary = imageSummary;
+
+            if (action === 'downloadCard') {
+                const blob = new Blob([imageSummary], { type: 'text/plain;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                const { weekNumber } = getWeekMeta();
+                link.href = url;
+                link.download = `vitalsync-week-${String(weekNumber).padStart(2, '0')}-card.txt`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                showShareToast('Card summary downloaded.', false);
+                markShareActionComplete(action, 'Download bonus applied (+1 streak day).');
+                return;
+            }
+
+            const content = action === 'copySummary' ? imageSummary : textSummary;
+            try {
+                const copied = await copyToClipboard(content);
+                if (copied) {
+                    const message = action === 'copySummary' ? 'Image-ready summary copied.' : 'Share text copied.';
+                    showShareToast(`${message} Ready to paste.`, false);
+                    markShareActionComplete(action, 'Consistency bonus applied (+1 streak day).');
+                    return;
+                }
+
+                const shared = await maybeNativeShare(content, 'VitalSync Weekly Pulse');
+                if (shared) {
+                    showShareToast('Opened native share sheet.', false);
+                    markShareActionComplete(action, 'Mobile share bonus applied (+1 streak day).');
+                    return;
+                }
+
+                showShareToast('Clipboard blocked on this browser. Try download card instead.', true);
+            } catch (error) {
+                const shared = await maybeNativeShare(content, 'VitalSync Weekly Pulse');
+                if (shared) {
+                    showShareToast('Shared using native sheet.', false);
+                    markShareActionComplete(action, 'Mobile share bonus applied (+1 streak day).');
+                    return;
+                }
+                showShareToast('Copy failed. Please retry.', true);
+            }
+        }
+
         function shareProgress() {
             const shareCard = document.getElementById('shareCard');
             if (!shareCard) return;
-            const gain = Math.max(4, Math.round(momentumScore / 6));
             const shareGain = document.getElementById('shareGain');
             const shareMessage = document.getElementById('shareMessage');
+            const shareMeta = document.getElementById('shareMeta');
+            const reward = document.getElementById('shareRewardState');
+            const { gain, target, label, textSummary, imageSummary } = buildShareContent();
+
+            shareState.textSummary = textSummary;
+            shareState.imageSummary = imageSummary;
+
             if (shareGain) shareGain.textContent = `+${gain}%`;
             if (shareMessage) {
-                shareMessage.textContent = `Current score: ${momentumScore}. My next goal is to hit ${Math.min(99, momentumScore + 8)} by Sunday. Who is in?`;
+                shareMessage.textContent = `Current score: ${momentumScore}. My next goal is to hit ${target} by Sunday. Who is in?`;
             }
+            if (shareMeta) shareMeta.textContent = label;
+            if (reward && shareState.completedActions.size === 0) {
+                reward.textContent = 'Complete all 3 actions to lock your weekly share streak bonus.';
+            }
+
             shareCard.classList.remove('hidden');
             shareCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            launchFloatingReaction('*');
+            launchFloatingReaction('📣');
         }
 
         function toChartPoints(values, width, height, padding) {
+
             const min = Math.min(...values);
             const max = Math.max(...values);
             const range = max - min || 1;
@@ -1121,24 +1558,24 @@
 
         function enableKeyboardAgentNodes() {
             const nodeAgentMap = {
-                'node-signal': 'signal',
-                'node-modeling': 'modeling',
-                'node-interpretation': 'interpretation',
-                'node-feedback': 'feedback',
-                'node-safety': 'safety'
+                'node-signal': { id: 'signal', label: 'Signal Ingestion' },
+                'node-modeling': { id: 'modeling', label: 'User Modeling' },
+                'node-interpretation': { id: 'interpretation', label: 'Interpretation' },
+                'node-feedback': { id: 'feedback', label: 'Feedback Generation' },
+                'node-safety': { id: 'safety', label: 'Safety Supervisor' }
             };
 
-            Object.entries(nodeAgentMap).forEach(([nodeId, agentId]) => {
+            Object.entries(nodeAgentMap).forEach(([nodeId, agent]) => {
                 const node = document.getElementById(nodeId);
                 if (!node) return;
 
                 node.setAttribute('tabindex', '0');
                 node.setAttribute('role', 'button');
-                node.setAttribute('aria-label', `Select ${agentId} agent`);
+                node.setAttribute('aria-label', `Select ${agent.label} agent node`);
                 node.addEventListener('keydown', event => {
                     if (event.key === 'Enter' || event.key === ' ') {
                         event.preventDefault();
-                        selectAgent(agentId);
+                        selectAgent(agent.id);
                     }
                 });
             });
@@ -1463,6 +1900,7 @@ Respond helpfully about wellness in a supportive, informative manner. If the use
         if (!loadStoredMetrics()) saveStoredMetrics();
         renderTrendCharts();
         refreshGreeting();
+        updateProfileStatusFromName(getDisplayName());
         resetPipelineTimeline();
         enableKeyboardAgentNodes();
         selectAgent('signal');
