@@ -164,23 +164,70 @@
             stroke: var(--accent);
             stroke-width: 3;
         }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(231, 229, 228, 0.9);
+        }
+
+        .momentum-ring {
+            width: 108px;
+            height: 108px;
+            border-radius: 50%;
+            background: conic-gradient(var(--accent) calc(var(--score) * 1%), #E7E5E4 0);
+            display: grid;
+            place-items: center;
+        }
+
+        .momentum-ring::before {
+            content: '';
+            width: 84px;
+            height: 84px;
+            border-radius: 50%;
+            background: white;
+            position: absolute;
+        }
+
+        .challenge-card {
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            background: linear-gradient(135deg, #fff 0%, #fffbeb 100%);
+        }
+
+        .challenge-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(217, 119, 6, 0.12);
+        }
+
+        .floating-heart {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            font-size: 26px;
+            pointer-events: none;
+            animation: floatUp 1.1s ease forwards;
+        }
+
+        @keyframes floatUp {
+            0% { opacity: 0.9; transform: translateY(0) scale(0.8); }
+            100% { opacity: 0; transform: translateY(-120px) scale(1.3); }
+        }
+
     </style>
 </head>
 <body class="min-h-screen">
     <!-- Main Container -->
     <div class="max-w-5xl mx-auto px-6 py-8">
-        
+
         <!-- Header -->
         <header class="flex items-center justify-between mb-12">
             <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background: linear-gradient(135deg, #F1FEFF 0%, #E0F7FA 100%); border: 2px solid #003E6B;">
                     <img src="logo.svg" alt="VitalSync" class="w-9 h-9">
                 </div>
-                <div>
-                    <h1 class="font-serif text-2xl font-semibold" style="color: #1C1917;">VitalSync</h1>
-                    <p class="text-sm" style="color: #A8A29E;">Local Wellness Intelligence</p>
-                </div>
-            </div>
                 <div>
                     <h1 class="font-serif text-2xl font-semibold" style="color: #1C1917;">VitalSync</h1>
                     <p class="text-sm" style="color: #A8A29E;">Local Wellness Intelligence</p>
@@ -202,8 +249,44 @@
 
         <!-- Greeting -->
         <div class="text-center mb-10">
-            <h2 class="font-serif text-3xl font-medium mb-2" style="color: #1C1917;">Good evening, Chris</h2>
-            <p class="text-base" style="color: #78716C;">Your wellness agents are ready. How can I help you today?</p>
+            <h2 id="personalGreeting" class="font-serif text-3xl font-medium mb-2" style="color: #1C1917;">Welcome back</h2>
+            <p id="personalSubGreeting" class="text-base" style="color: #78716C;">Your wellness agents are ready. How can I help you today?</p>
+            <button onclick="setDisplayName()" class="mt-3 text-sm px-3 py-1.5 rounded-full transition-colors" style="border:1px solid #E7E5E4; color:#78716C;">
+                Personalize name
+            </button>
+        </div>
+
+
+        <!-- Viral Growth Layer -->
+        <section class="glass-card rounded-2xl p-5 mb-8">
+            <div class="grid md:grid-cols-3 gap-5 items-center">
+                <div class="md:col-span-2">
+                    <p class="text-xs uppercase tracking-[0.18em]" style="color: #A8A29E;">Momentum Engine</p>
+                    <h3 class="font-serif text-2xl mt-1" style="color: #1C1917;">Build streaks. Complete micro-challenges. Share wins.</h3>
+                    <p class="text-sm mt-2" style="color: #78716C;">Designed to feel rewarding in under 60 seconds a day — ideal for habit loops and social sharing.</p>
+                    <div id="challengeGrid" class="grid sm:grid-cols-2 gap-3 mt-4"></div>
+                </div>
+                <div class="rounded-xl p-4" style="background:#fff; border:1px solid #E7E5E4;">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-sm" style="color:#78716C;">Wellness Momentum</span>
+                        <span id="streakCount" class="text-sm font-medium" style="color:#D97706;">🔥 4 day streak</span>
+                    </div>
+                    <div class="flex items-center justify-center relative">
+                        <div id="momentumRing" class="momentum-ring relative" style="--score: 72;">
+                            <span id="momentumValue" class="relative z-10 font-semibold" style="color:#1C1917;">72</span>
+                        </div>
+                    </div>
+                    <button onclick="shareProgress()" class="btn-primary w-full mt-4 py-2 text-sm">Share progress card</button>
+                </div>
+            </div>
+        </section>
+
+        <div id="shareCard" class="max-w-2xl mx-auto mb-8 hidden">
+            <div class="rounded-2xl p-5" style="background:linear-gradient(135deg,#111827 0%, #1f2937 100%); color:#fff;">
+                <p class="text-xs tracking-[0.2em] uppercase text-amber-300">VitalSync Weekly Pulse</p>
+                <h3 class="font-serif text-2xl mt-2">I improved my wellness momentum by <span id="shareGain" class="text-amber-300">+12%</span> this week.</h3>
+                <p id="shareMessage" class="text-sm mt-3 text-slate-300">Small actions compound. Join me on a 7-day reset challenge.</p>
+            </div>
         </div>
 
         <!-- Quick Actions -->
@@ -213,14 +296,15 @@
             <button onclick="setQuickAction('workout')" class="pill">🏃 Workout</button>
             <button onclick="setQuickAction('stress')" class="pill">🧘 Stress</button>
             <button onclick="setQuickAction('nutrition')" class="pill">🥗 Nutrition</button>
+            <button onclick="setQuickAction('challenge')" class="pill">🚀 7-Day Challenge</button>
         </div>
 
         <!-- Main Input Area -->
         <div class="max-w-3xl mx-auto mb-12">
             <div class="input-field p-4">
-                <textarea 
-                    id="userInput" 
-                    rows="3" 
+                <textarea
+                    id="userInput"
+                    rows="3"
                     class="w-full resize-none text-base bg-transparent border-none focus:outline-none focus:ring-0"
                     style="color: #1C1917;"
                     placeholder="Ask about your health metrics, request insights, or get wellness recommendations..."
@@ -481,6 +565,47 @@
         let isProcessing = false;
         let currentAgent = null;
         let currentQuickAction = null;
+        let momentumScore = 72;
+
+        const dailyChallenges = [
+            { id: "hydrate", title: "Hydration Sprint", detail: "Drink 2 extra glasses of water before 3PM", points: 8 },
+            { id: "walk", title: "Sunlight Walk", detail: "Take a 12-minute outdoor walk", points: 10 },
+            { id: "unwind", title: "Evening Unwind", detail: "No screens 30 minutes before sleep", points: 12 },
+            { id: "breathe", title: "Stress Reset", detail: "Complete a 4-minute breathing drill", points: 9 }
+        ];
+
+        function getTimeGreeting() {
+            const hour = new Date().getHours();
+            if (hour < 12) return 'Good morning';
+            if (hour < 18) return 'Good afternoon';
+            return 'Good evening';
+        }
+
+        function getDisplayName() {
+            return localStorage.getItem('vitalsyncUserName') || 'friend';
+        }
+
+        function refreshGreeting() {
+            const greetingEl = document.getElementById('personalGreeting');
+            const subGreetingEl = document.getElementById('personalSubGreeting');
+            const name = getDisplayName();
+            const firstName = name.split(' ')[0];
+            if (greetingEl) greetingEl.textContent = `${getTimeGreeting()}, ${firstName}`;
+            if (subGreetingEl) subGreetingEl.textContent = `Your wellness agents are ready, ${firstName}. How can I help you today?`;
+        }
+
+        function setDisplayName() {
+            const currentName = getDisplayName() === 'friend' ? '' : getDisplayName();
+            const nextName = window.prompt('What should VitalSync call you?', currentName);
+            if (nextName === null) return;
+            const sanitized = nextName.trim().replace(/\s+/g, ' ');
+            if (!sanitized) {
+                localStorage.removeItem('vitalsyncUserName');
+            } else {
+                localStorage.setItem('vitalsyncUserName', sanitized);
+            }
+            refreshGreeting();
+        }
 
         // Agent memory data
         const agentMemories = {
@@ -499,25 +624,78 @@
                 sleep: 'How did I sleep last night compared to my usual pattern?',
                 workout: 'I just finished a 5k run. What should my recovery look like?',
                 stress: 'I\'ve been feeling stressed lately. Any recommendations?',
-                nutrition: 'What should I eat today for optimal energy?'
+                nutrition: 'What should I eat today for optimal energy?',
+                challenge: 'Design me a personalized 7-day wellness challenge I can share with friends.'
             };
             document.getElementById('userInput').value = prompts[action] || '';
         }
+
+
+        function renderChallenges() {
+            const challengeGrid = document.getElementById('challengeGrid');
+            if (!challengeGrid) return;
+            challengeGrid.innerHTML = dailyChallenges.map(challenge => `
+                <button class="challenge-card text-left" onclick="completeChallenge('${challenge.id}')">
+                    <div class="flex items-center justify-between mb-1">
+                        <p class="font-medium" style="color:#1C1917;">${challenge.title}</p>
+                        <span class="text-xs px-2 py-1 rounded-full" style="background:rgba(217,119,6,.12); color:#92400E;">+${challenge.points}</span>
+                    </div>
+                    <p class="text-xs" style="color:#78716C;">${challenge.detail}</p>
+                </button>
+            `).join('');
+        }
+
+        function completeChallenge(challengeId) {
+            const challenge = dailyChallenges.find(c => c.id === challengeId);
+            if (!challenge) return;
+            momentumScore = Math.min(99, momentumScore + Math.round(challenge.points / 2));
+            updateMomentumUI();
+            launchFloatingReaction('💛');
+            document.getElementById('userInput').value = `I completed the ${challenge.title} challenge. Give me my next best action.`;
+        }
+
+        function updateMomentumUI() {
+            const ring = document.getElementById('momentumRing');
+            const value = document.getElementById('momentumValue');
+            const streak = document.getElementById('streakCount');
+            if (ring) ring.style.setProperty('--score', momentumScore);
+            if (value) value.textContent = momentumScore;
+            if (streak) streak.textContent = `🔥 ${Math.max(4, Math.floor(momentumScore / 14))} day streak`;
+        }
+
+        function launchFloatingReaction(emoji) {
+            const bubble = document.createElement('div');
+            bubble.className = 'floating-heart';
+            bubble.textContent = emoji;
+            document.body.appendChild(bubble);
+            setTimeout(() => bubble.remove(), 1200);
+        }
+
+        function shareProgress() {
+            const shareCard = document.getElementById('shareCard');
+            const gain = Math.max(4, Math.round(momentumScore / 6));
+            document.getElementById('shareGain').textContent = `+${gain}%`;
+            document.getElementById('shareMessage').textContent = `Current score: ${momentumScore}. My next goal is to hit ${Math.min(99, momentumScore + 8)} by Sunday. Who's in?`;
+            shareCard.classList.remove('hidden');
+            shareCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            launchFloatingReaction('✨');
+        }
+
 
         // Select agent
         function selectAgent(agentId) {
             // Remove active from all
             document.querySelectorAll('.agent-card').forEach(card => card.classList.remove('active'));
             document.querySelectorAll('.connection-line').forEach(line => line.classList.remove('active'));
-            
+
             // Activate selected
             const card = document.getElementById('agent-' + agentId);
             const node = document.getElementById('node-' + agentId);
             if (card) card.classList.add('active');
-            
+
             // Update memory details
             document.getElementById('memoryDetails').innerHTML = agentMemories[agentId] || 'Select an agent';
-            
+
             // Animate connection lines
             animateConnections(agentId);
         }
@@ -530,7 +708,7 @@
                 feedback: ['line3', 'line4'],
                 safety: ['line5', 'line6']
             };
-            
+
             const lines = lineMap[agentId] || [];
             lines.forEach((lineId, index) => {
                 setTimeout(() => {
@@ -551,31 +729,31 @@
             if (!input || isProcessing) return;
 
             isProcessing = true;
-            
+
             // Show processing state
             const responseArea = document.getElementById('responseArea');
             const responseContent = document.getElementById('responseContent');
             const responseMetadata = document.getElementById('responseMetadata');
-            
+
             responseArea.classList.remove('hidden');
             responseContent.innerHTML = '<span style="color: #A8A29E;">Processing your request...</span>';
             responseMetadata.innerHTML = '';
-            
+
             // Animate agents
             const agentSequence = ['signal', 'modeling', 'interpretation', 'feedback', 'safety'];
-            
+
             for (let i = 0; i < agentSequence.length; i++) {
                 const agent = agentSequence[i];
                 selectAgent(agent);
-                
+
                 // Update memory bars progressively
                 const progress = ((i + 1) / agentSequence.length) * 100;
                 document.getElementById('workingMemBar').style.width = progress + '%';
                 document.getElementById('workingMemValue').textContent = Math.round(progress) + '%';
-                
+
                 await new Promise(r => setTimeout(r, 400));
             }
-            
+
             // Call Ollama
             try {
                 const response = await fetch('http://localhost:11434/api/generate', {
@@ -583,8 +761,8 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         model: 'llama3.2',
-                        prompt: `You are VitalSync, a local wellness AI assistant. The user said: "${input}". 
-                        
+                        prompt: `You are VitalSync, a local wellness AI assistant. The user said: "${input}".
+
 The system context includes:
 - User has been tracking heart rate, sleep, workouts, and stress
 - Current baselines: HR 68bpm, Sleep 6.2h/night
@@ -595,9 +773,9 @@ Respond helpfully about wellness in a supportive, informative manner. If the use
                         stream: false
                     })
                 });
-                
+
                 const data = await response.json();
-                
+
                 // Display response
                 responseContent.innerHTML = formatResponse(data.response);
                 responseMetadata.innerHTML = `
@@ -605,13 +783,13 @@ Respond helpfully about wellness in a supportive, informative manner. If the use
                     <span>Tokens: ${data.eval_count || 'N/A'}</span>
                     <span>Duration: ${(data.eval_duration / 1000000000).toFixed(2)}s</span>
                 `;
-                
+
             } catch (error) {
                 responseContent.innerHTML = `<span style="color: #ef4444;">Error connecting to Ollama: ${error.message}</span>
                 <br><br>
                 <em>Make sure Ollama is running with: ollama run llama3.2</em>`;
             }
-            
+
             isProcessing = false;
         }
 
@@ -632,7 +810,10 @@ Respond helpfully about wellness in a supportive, informative manner. If the use
         });
 
         // Initialize
-        console.log('VitalSync initialized');
+        renderChallenges();
+        updateMomentumUI();
+        refreshGreeting();
+        console.log('VitalSync initialized with momentum engine');
     </script>
 </body>
 </html>
