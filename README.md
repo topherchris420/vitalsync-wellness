@@ -44,6 +44,64 @@ A privacy-first multi-agent wellness system that runs entirely on your local dev
 
 3. **Start chatting** with your wellness AI!
 
+## Local Data Input
+
+You can import real metric series using the paperclip button in the UI.
+
+Expected JSON format:
+
+```json
+{
+  "heartRate": [68, 70, 67, 72],
+  "sleep": [6.1, 6.4, 6.0, 6.5],
+  "stress": [52, 49, 55, 47]
+}
+```
+
+You can also push live samples from a local script by dispatching a browser event:
+
+```js
+window.dispatchEvent(new CustomEvent('vitalsync-metric', {
+  detail: { metric: 'heartRate', value: 71 }
+}));
+```
+
+### Local Streaming Bridge
+
+The page now auto-connects to `http://127.0.0.1:8765/events` via SSE.
+
+Run the included bridge:
+
+```bash
+python vitalsync_metric_bridge.py
+```
+
+Disable demo data generation:
+
+```bash
+python vitalsync_metric_bridge.py --no-demo
+```
+
+Push real samples into the bridge:
+
+```bash
+curl -X POST http://127.0.0.1:8765/push \
+  -H "Content-Type: application/json" \
+  -d "{\"metric\":\"heartRate\",\"value\":72}"
+```
+
+Batch push:
+
+```json
+{
+  "samples": [
+    {"metric": "heartRate", "value": 72},
+    {"metric": "sleep", "value": 6.4},
+    {"metric": "stress", "value": 48}
+  ]
+}
+```
+
 ## Tech Stack
 
 - HTML5, TailwindCSS, Vanilla JavaScript

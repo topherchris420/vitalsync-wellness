@@ -216,6 +216,64 @@
             100% { opacity: 0; transform: translateY(-120px) scale(1.3); }
         }
 
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        .trend-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px;
+        }
+
+        .trend-svg {
+            width: 100%;
+            height: 90px;
+        }
+
+        .trend-line {
+            fill: none;
+            stroke-width: 2.5;
+        }
+
+        .trend-fill {
+            opacity: 0.12;
+        }
+
+        .pipeline-step {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 10px;
+            background: #fff;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .pipeline-step.active {
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+        }
+
+        .pipeline-step.completed {
+            border-color: #22c55e;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition: none !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
     </style>
 </head>
 <body class="min-h-screen">
@@ -242,7 +300,7 @@
                     <svg class="w-4 h-4" style="color: #D97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                     </svg>
-                    <span class="text-sm" style="color: #92400E;">100% Local</span>
+                    <span class="text-sm" style="color: #92400E;">Local Processing</span>
                 </div>
             </div>
         </header>
@@ -251,7 +309,7 @@
         <div class="text-center mb-10">
             <h2 id="personalGreeting" class="font-serif text-3xl font-medium mb-2" style="color: #1C1917;">Welcome back</h2>
             <p id="personalSubGreeting" class="text-base" style="color: #78716C;">Your wellness agents are ready. How can I help you today?</p>
-            <button onclick="setDisplayName()" class="mt-3 text-sm px-3 py-1.5 rounded-full transition-colors" style="border:1px solid #E7E5E4; color:#78716C;">
+            <button type="button" onclick="setDisplayName()" class="mt-3 text-sm px-3 py-1.5 rounded-full transition-colors" style="border:1px solid #E7E5E4; color:#78716C;">
                 Personalize name
             </button>
         </div>
@@ -263,20 +321,20 @@
                 <div class="md:col-span-2">
                     <p class="text-xs uppercase tracking-[0.18em]" style="color: #A8A29E;">Momentum Engine</p>
                     <h3 class="font-serif text-2xl mt-1" style="color: #1C1917;">Build streaks. Complete micro-challenges. Share wins.</h3>
-                    <p class="text-sm mt-2" style="color: #78716C;">Designed to feel rewarding in under 60 seconds a day — ideal for habit loops and social sharing.</p>
+                    <p class="text-sm mt-2" style="color: #78716C;">Designed to feel rewarding in under 60 seconds a day for habit loops and social sharing.</p>
                     <div id="challengeGrid" class="grid sm:grid-cols-2 gap-3 mt-4"></div>
                 </div>
                 <div class="rounded-xl p-4" style="background:#fff; border:1px solid #E7E5E4;">
                     <div class="flex justify-between items-center mb-3">
                         <span class="text-sm" style="color:#78716C;">Wellness Momentum</span>
-                        <span id="streakCount" class="text-sm font-medium" style="color:#D97706;">🔥 4 day streak</span>
+                        <span id="streakCount" class="text-sm font-medium" style="color:#D97706;">Streak: 4 days</span>
                     </div>
                     <div class="flex items-center justify-center relative">
                         <div id="momentumRing" class="momentum-ring relative" style="--score: 72;">
                             <span id="momentumValue" class="relative z-10 font-semibold" style="color:#1C1917;">72</span>
                         </div>
                     </div>
-                    <button onclick="shareProgress()" class="btn-primary w-full mt-4 py-2 text-sm">Share progress card</button>
+                    <button type="button" onclick="shareProgress()" class="btn-primary w-full mt-4 py-2 text-sm">Share progress card</button>
                 </div>
             </div>
         </section>
@@ -289,19 +347,44 @@
             </div>
         </div>
 
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+            <div class="trend-card">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-sm font-medium" style="color:#1C1917;">Heart Rate Trend</p>
+                    <span id="hrTrendDelta" class="text-xs" style="color:#78716C;">+0 bpm</span>
+                </div>
+                <svg id="trendHeartRate" class="trend-svg" viewBox="0 0 260 90" preserveAspectRatio="none" aria-label="Heart rate trend visualization"></svg>
+            </div>
+            <div class="trend-card">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-sm font-medium" style="color:#1C1917;">Sleep Duration</p>
+                    <span id="sleepTrendDelta" class="text-xs" style="color:#78716C;">+0.0 hr</span>
+                </div>
+                <svg id="trendSleep" class="trend-svg" viewBox="0 0 260 90" preserveAspectRatio="none" aria-label="Sleep trend visualization"></svg>
+            </div>
+            <div class="trend-card">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-sm font-medium" style="color:#1C1917;">Stress Index</p>
+                    <span id="stressTrendDelta" class="text-xs" style="color:#78716C;">-0 pts</span>
+                </div>
+                <svg id="trendStress" class="trend-svg" viewBox="0 0 260 90" preserveAspectRatio="none" aria-label="Stress trend visualization"></svg>
+            </div>
+        </section>
+
         <!-- Quick Actions -->
         <div class="flex flex-wrap justify-center gap-3 mb-10">
-            <button onclick="setQuickAction('heartrate')" class="pill">❤️ Heart Rate</button>
-            <button onclick="setQuickAction('sleep')" class="pill">😴 Sleep</button>
-            <button onclick="setQuickAction('workout')" class="pill">🏃 Workout</button>
-            <button onclick="setQuickAction('stress')" class="pill">🧘 Stress</button>
-            <button onclick="setQuickAction('nutrition')" class="pill">🥗 Nutrition</button>
-            <button onclick="setQuickAction('challenge')" class="pill">🚀 7-Day Challenge</button>
+            <button onclick="setQuickAction('heartrate')" class="pill" type="button">Heart Rate</button>
+            <button onclick="setQuickAction('sleep')" class="pill" type="button">Sleep</button>
+            <button onclick="setQuickAction('workout')" class="pill" type="button">Workout</button>
+            <button onclick="setQuickAction('stress')" class="pill" type="button">Stress</button>
+            <button onclick="setQuickAction('nutrition')" class="pill" type="button">Nutrition</button>
+            <button onclick="setQuickAction('challenge')" class="pill" type="button">7-Day Challenge</button>
         </div>
 
         <!-- Main Input Area -->
         <div class="max-w-3xl mx-auto mb-12">
             <div class="input-field p-4">
+                <label for="userInput" class="sr-only">Message to VitalSync</label>
                 <textarea
                     id="userInput"
                     rows="3"
@@ -311,23 +394,23 @@
                 ></textarea>
                 <div class="flex items-center justify-between mt-3 pt-3" style="border-top: 1px solid #E7E5E4;">
                     <div class="flex items-center gap-2">
-                        <button class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                        <button id="attachDataButton" type="button" aria-label="Attach data file" title="Attach data file" class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
                             <svg class="w-5 h-5" style="color: #A8A29E;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
                             </svg>
                         </button>
-                        <button class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                        <button type="button" aria-label="Record voice prompt" title="Record voice prompt" class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
                             <svg class="w-5 h-5" style="color: #A8A29E;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
                             </svg>
 </button>
-                        <select class="text-sm bg-transparent border-none focus:outline-none" style="color: #78716C;">
+                        <select id="modelSelect" aria-label="Select local model" class="text-sm bg-transparent border border-[#E7E5E4] rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-amber-500/25" style="color: #78716C;">
                             <option>llama3.2</option>
                             <option>phi3</option>
                             <option>qwen2.5</option>
                         </select>
                     </div>
-                    <button onclick="processRequest()" class="btn-primary px-5 py-2 text-sm font-medium flex items-center gap-2">
+                    <button id="sendButton" type="button" onclick="processRequest()" class="btn-primary px-5 py-2 text-sm font-medium flex items-center gap-2">
                         <span>Send</span>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
@@ -335,6 +418,7 @@
                     </button>
                 </div>
             </div>
+            <input id="metricsFileInput" type="file" accept=".json,application/json" class="hidden">
         </div>
 
         <!-- Response Area -->
@@ -345,7 +429,7 @@
                         <img src="logo.svg" alt="VitalSync" class="w-5 h-5">
                     </div>
                     <div class="flex-1">
-                        <div id="responseContent" class="text-base leading-relaxed" style="color: #1C1917;"></div>
+                        <div id="responseContent" role="status" aria-live="polite" class="text-base leading-relaxed whitespace-pre-wrap" style="color: #1C1917;"></div>
                         <div id="responseMetadata" class="mt-3 flex items-center gap-4 text-sm" style="color: #A8A29E;"></div>
                     </div>
                 </div>
@@ -356,11 +440,12 @@
         <div id="agentViz" class="bg-white rounded-2xl border border-[#E7E5E4] p-6 mb-12">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="font-serif text-xl font-medium" style="color: #1C1917;">Agent Orchestration</h3>
-                <button onclick="toggleViz()" class="text-sm" style="color: #78716C;">Toggle View</button>
+                <button id="vizToggleButton" type="button" aria-expanded="true" onclick="toggleViz()" class="text-sm" style="color: #78716C;">Hide View</button>
             </div>
 
+            <div id="agentVizContent">
             <!-- SVG Connection Diagram -->
-            <svg class="w-full" style="height: 280px;" viewBox="0 0 800 280">
+            <svg class="w-full" style="height: 280px;" viewBox="0 0 800 280" aria-label="Agent orchestration diagram">
                 <!-- Connection Lines -->
                 <path id="line1" class="connection-line" d="M 120 200 Q 120 140 200 100"/>
                 <path id="line2" class="connection-line" d="M 200 100 Q 320 80 400 80"/>
@@ -408,7 +493,7 @@
             </svg>
 
             <!-- Agent Cards Grid -->
-            <div class="grid grid-cols-5 gap-4 mt-6">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mt-6">
                 <div id="agent-signal" class="agent-card p-4 text-center cursor-pointer" onclick="selectAgent('signal')">
                     <div class="w-10 h-10 mx-auto mb-2 rounded-lg flex items-center justify-center" style="background: rgba(59, 130, 246, 0.1);">
                         <svg class="w-5 h-5" style="color: #3b82f6;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -458,6 +543,36 @@
                     <p class="text-xs font-medium" style="color: #78716C;">Safety</p>
                     <p class="text-[10px]" style="color: #A8A29E;">Supervisor</p>
                 </div>
+            </div>
+
+            <div class="mt-6">
+                <div class="flex items-center justify-between mb-3">
+                    <h4 class="text-sm font-medium" style="color:#1C1917;">Pipeline Timeline</h4>
+                    <span id="pipelineDuration" class="text-xs" style="color:#78716C;">0.00s total</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
+                    <div id="step-signal" class="pipeline-step">
+                        <p class="text-xs font-medium" style="color:#1C1917;">Signal</p>
+                        <p id="latency-signal" class="text-[11px]" style="color:#78716C;">pending</p>
+                    </div>
+                    <div id="step-modeling" class="pipeline-step">
+                        <p class="text-xs font-medium" style="color:#1C1917;">Modeling</p>
+                        <p id="latency-modeling" class="text-[11px]" style="color:#78716C;">pending</p>
+                    </div>
+                    <div id="step-interpretation" class="pipeline-step">
+                        <p class="text-xs font-medium" style="color:#1C1917;">Interpretation</p>
+                        <p id="latency-interpretation" class="text-[11px]" style="color:#78716C;">pending</p>
+                    </div>
+                    <div id="step-feedback" class="pipeline-step">
+                        <p class="text-xs font-medium" style="color:#1C1917;">Feedback</p>
+                        <p id="latency-feedback" class="text-[11px]" style="color:#78716C;">pending</p>
+                    </div>
+                    <div id="step-safety" class="pipeline-step">
+                        <p class="text-xs font-medium" style="color:#1C1917;">Safety</p>
+                        <p id="latency-safety" class="text-[11px]" style="color:#78716C;">pending</p>
+                    </div>
+                </div>
+            </div>
             </div>
         </div>
 
@@ -542,7 +657,7 @@
                         <span class="w-2 h-2 rounded-full" style="background: #06b6d4;"></span>
                         <span class="text-sm font-medium" style="color: #1C1917;">Privacy First</span>
                     </div>
-                    <p class="text-xs" style="color: #78716C;">100% local processing, no external calls</p>
+                    <p class="text-xs" style="color: #78716C;">Health data processing stays on-device after page load</p>
                 </div>
                 <div class="p-3 rounded-xl" style="background: rgba(139, 92, 246, 0.05); border: 1px solid rgba(139, 92, 246, 0.2);">
                     <div class="flex items-center gap-2 mb-2">
@@ -556,16 +671,22 @@
 
         <!-- Footer -->
         <footer class="text-center mt-12 py-6" style="border-top: 1px solid #E7E5E4;">
-            <p class="text-sm" style="color: #A8A29E;">Powered by local Ollama models • All data stays on your device</p>
+            <p class="text-sm" style="color: #A8A29E;">Powered by local Ollama models | All data stays on your device</p>
         </footer>
     </div>
 
     <script>
         // State
         let isProcessing = false;
-        let currentAgent = null;
         let currentQuickAction = null;
         let momentumScore = 72;
+        const agentSequence = ['signal', 'modeling', 'interpretation', 'feedback', 'safety'];
+        const METRICS_STORAGE_KEY = 'vitalsyncMetricSeriesV1';
+        const METRIC_WINDOW_SIZE = 30;
+        const TREND_WINDOW_SIZE = 7;
+        const METRIC_BRIDGE_URL = 'http://127.0.0.1:8765/events';
+        let metricBridgeSource = null;
+        let metricBridgeConnected = false;
 
         const dailyChallenges = [
             { id: "hydrate", title: "Hydration Sprint", detail: "Drink 2 extra glasses of water before 3PM", points: 8 },
@@ -573,6 +694,194 @@
             { id: "unwind", title: "Evening Unwind", detail: "No screens 30 minutes before sleep", points: 12 },
             { id: "breathe", title: "Stress Reset", detail: "Complete a 4-minute breathing drill", points: 9 }
         ];
+
+        let trendSeries = {
+            heartRate: [66, 67, 69, 71, 70, 68, 67],
+            sleep: [5.9, 6.1, 6.0, 6.2, 6.5, 6.4, 6.6],
+            stress: [58, 56, 60, 54, 52, 49, 47]
+        };
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        function toNumber(value) {
+            const num = typeof value === 'number' ? value : Number(value);
+            return Number.isFinite(num) ? num : null;
+        }
+
+        function trimSeries(values, size) {
+            return values.slice(Math.max(0, values.length - size));
+        }
+
+        function normalizeNumericSeries(raw, fallback, minValue, maxValue) {
+            const source = Array.isArray(raw) ? raw : [];
+            const normalized = source
+                .map(item => {
+                    if (item && typeof item === 'object' && 'value' in item) return toNumber(item.value);
+                    return toNumber(item);
+                })
+                .filter(value => value !== null)
+                .map(value => Math.min(maxValue, Math.max(minValue, value)));
+
+            if (normalized.length < 2) return fallback.slice();
+            return trimSeries(normalized, METRIC_WINDOW_SIZE);
+        }
+
+        function buildNormalizedSeries(raw) {
+            return {
+                heartRate: normalizeNumericSeries(raw && raw.heartRate, [66, 67, 69, 71, 70, 68, 67], 35, 210),
+                sleep: normalizeNumericSeries(raw && raw.sleep, [5.9, 6.1, 6.0, 6.2, 6.5, 6.4, 6.6], 0, 16),
+                stress: normalizeNumericSeries(raw && raw.stress, [58, 56, 60, 54, 52, 49, 47], 0, 100)
+            };
+        }
+
+        function loadStoredMetrics() {
+            try {
+                const raw = localStorage.getItem(METRICS_STORAGE_KEY);
+                if (!raw) return false;
+                const parsed = JSON.parse(raw);
+                trendSeries = buildNormalizedSeries(parsed);
+                return true;
+            } catch (error) {
+                console.warn('Unable to load stored metrics', error);
+                return false;
+            }
+        }
+
+        function saveStoredMetrics() {
+            try {
+                localStorage.setItem(METRICS_STORAGE_KEY, JSON.stringify(trendSeries));
+            } catch (error) {
+                console.warn('Unable to save metrics', error);
+            }
+        }
+
+        function average(values) {
+            if (!Array.isArray(values) || values.length === 0) return 0;
+            return values.reduce((sum, value) => sum + value, 0) / values.length;
+        }
+
+        function getRecent(values) {
+            if (!Array.isArray(values) || values.length === 0) return [];
+            return values.slice(Math.max(0, values.length - TREND_WINDOW_SIZE));
+        }
+
+        function getBaselines() {
+            return {
+                heartRate: average(getRecent(trendSeries.heartRate)),
+                sleep: average(getRecent(trendSeries.sleep))
+            };
+        }
+
+        function mergeMetrics(nextSeries) {
+            trendSeries = buildNormalizedSeries(nextSeries);
+            saveStoredMetrics();
+            renderTrendCharts();
+        }
+
+        function openMetricsImportDialog() {
+            const input = document.getElementById('metricsFileInput');
+            if (input) input.click();
+        }
+
+        function showImportResult(message, isError) {
+            const responseArea = document.getElementById('responseArea');
+            if (responseArea) responseArea.classList.remove('hidden');
+            setResponseText(message, isError ? '#b91c1c' : '#166534');
+            clearResponseMetadata();
+        }
+
+        async function handleMetricsImport(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+
+            try {
+                const rawText = await file.text();
+                const parsed = JSON.parse(rawText);
+                mergeMetrics(parsed);
+                const hrCount = trendSeries.heartRate.length;
+                const sleepCount = trendSeries.sleep.length;
+                const stressCount = trendSeries.stress.length;
+                showImportResult(`Imported metrics from ${file.name}. Loaded ${hrCount} heart-rate, ${sleepCount} sleep, and ${stressCount} stress samples.`, false);
+            } catch (error) {
+                showImportResult(`Could not import metrics file. ${error.message}`, true);
+            } finally {
+                event.target.value = '';
+            }
+        }
+
+        function clampMetricValue(metric, value) {
+            if (metric === 'heartRate') return Math.min(210, Math.max(35, value));
+            if (metric === 'sleep') return Math.min(16, Math.max(0, value));
+            if (metric === 'stress') return Math.min(100, Math.max(0, value));
+            return value;
+        }
+
+        function appendMetricSample(metric, value) {
+            if (!(metric in trendSeries)) return;
+            const numeric = toNumber(value);
+            if (numeric === null) return;
+
+            const clamped = clampMetricValue(metric, numeric);
+            trendSeries[metric] = trimSeries([...trendSeries[metric], clamped], METRIC_WINDOW_SIZE);
+            saveStoredMetrics();
+            renderTrendCharts();
+        }
+
+        function handleMetricBridgeEvent(event) {
+            const detail = event && event.detail ? event.detail : {};
+            ingestMetricPayload(detail);
+        }
+
+        function ingestMetricPayload(payload) {
+            if (!payload) return;
+
+            if (Array.isArray(payload)) {
+                payload.forEach(item => ingestMetricPayload(item));
+                return;
+            }
+
+            if (payload.samples && Array.isArray(payload.samples)) {
+                payload.samples.forEach(item => ingestMetricPayload(item));
+                return;
+            }
+
+            if (payload.metric && payload.value !== undefined) {
+                appendMetricSample(payload.metric, payload.value);
+            }
+        }
+
+        function connectMetricBridge() {
+            if (!('EventSource' in window) || metricBridgeSource) return;
+
+            try {
+                metricBridgeSource = new EventSource(METRIC_BRIDGE_URL);
+                metricBridgeSource.onopen = () => {
+                    if (!metricBridgeConnected) {
+                        metricBridgeConnected = true;
+                        console.log(`VitalSync metric bridge connected: ${METRIC_BRIDGE_URL}`);
+                    }
+                };
+
+                metricBridgeSource.onmessage = event => {
+                    if (!event || !event.data) return;
+                    try {
+                        const payload = JSON.parse(event.data);
+                        ingestMetricPayload(payload);
+                    } catch (error) {
+                        console.warn('Invalid metric bridge payload', error);
+                    }
+                };
+
+                metricBridgeSource.onerror = () => {
+                    metricBridgeConnected = false;
+                };
+            } catch (error) {
+                console.warn('Unable to connect metric bridge', error);
+                metricBridgeSource = null;
+            }
+        }
 
         function getTimeGreeting() {
             const hour = new Date().getHours();
@@ -609,11 +918,11 @@
 
         // Agent memory data
         const agentMemories = {
-            signal: '<strong>Signal Ingestion:</strong> Buffering last 6 hours of raw sensor data from HealthKit, Health Connect, and wearables.',
-            modeling: '<strong>User Modeling:</strong> 30-day HR baseline: 68bpm | 7-day sleep avg: 6.2h | Preference: Morning workouts',
-            interpretation: '<strong>Interpretation:</strong> Retrieved 12 relevant episodes from vector store. Confidence: 85%',
-            feedback: '<strong>Feedback Gen:</strong> Retrieved user tone preference: Supportive | Template: Health & Wellness v2.1',
-            safety: '<strong>Safety Supervisor:</strong> Blocklist: 2,847 terms | Allow medical advice: FALSE | Emergency thresholds: HR>180, SpO2<88%'
+            signal: 'Signal Ingestion: Buffering last 6 hours of raw sensor data from HealthKit, Health Connect, and wearables.',
+            modeling: 'User Modeling: 30-day HR baseline 68bpm | 7-day sleep avg 6.2h | Preference: Morning workouts.',
+            interpretation: 'Interpretation: Retrieved 12 relevant episodes from vector store. Confidence: 85%.',
+            feedback: 'Feedback Generation: Retrieved user tone preference (supportive) and recommendation template v2.1.',
+            safety: 'Safety Supervisor: Blocklist 2,847 terms | Medical advice disabled | Emergency thresholds: HR > 180, SpO2 < 88%.'
         };
 
         // Quick action handlers
@@ -627,7 +936,9 @@
                 nutrition: 'What should I eat today for optimal energy?',
                 challenge: 'Design me a personalized 7-day wellness challenge I can share with friends.'
             };
-            document.getElementById('userInput').value = prompts[action] || '';
+            const input = document.getElementById('userInput');
+            if (input) input.value = prompts[action] || '';
+            selectAgent(action === 'challenge' ? 'feedback' : 'interpretation');
         }
 
 
@@ -635,7 +946,7 @@
             const challengeGrid = document.getElementById('challengeGrid');
             if (!challengeGrid) return;
             challengeGrid.innerHTML = dailyChallenges.map(challenge => `
-                <button class="challenge-card text-left" onclick="completeChallenge('${challenge.id}')">
+                <button type="button" class="challenge-card text-left" onclick="completeChallenge('${challenge.id}')">
                     <div class="flex items-center justify-between mb-1">
                         <p class="font-medium" style="color:#1C1917;">${challenge.title}</p>
                         <span class="text-xs px-2 py-1 rounded-full" style="background:rgba(217,119,6,.12); color:#92400E;">+${challenge.points}</span>
@@ -650,8 +961,9 @@
             if (!challenge) return;
             momentumScore = Math.min(99, momentumScore + Math.round(challenge.points / 2));
             updateMomentumUI();
-            launchFloatingReaction('💛');
-            document.getElementById('userInput').value = `I completed the ${challenge.title} challenge. Give me my next best action.`;
+            launchFloatingReaction('+');
+            const input = document.getElementById('userInput');
+            if (input) input.value = `I completed the ${challenge.title} challenge. Give me my next best action.`;
         }
 
         function updateMomentumUI() {
@@ -660,43 +972,157 @@
             const streak = document.getElementById('streakCount');
             if (ring) ring.style.setProperty('--score', momentumScore);
             if (value) value.textContent = momentumScore;
-            if (streak) streak.textContent = `🔥 ${Math.max(4, Math.floor(momentumScore / 14))} day streak`;
+            if (streak) streak.textContent = `Streak: ${Math.max(4, Math.floor(momentumScore / 14))} days`;
         }
 
-        function launchFloatingReaction(emoji) {
+        function launchFloatingReaction(symbol) {
             const bubble = document.createElement('div');
             bubble.className = 'floating-heart';
-            bubble.textContent = emoji;
+            bubble.textContent = symbol;
             document.body.appendChild(bubble);
             setTimeout(() => bubble.remove(), 1200);
         }
 
         function shareProgress() {
             const shareCard = document.getElementById('shareCard');
+            if (!shareCard) return;
             const gain = Math.max(4, Math.round(momentumScore / 6));
-            document.getElementById('shareGain').textContent = `+${gain}%`;
-            document.getElementById('shareMessage').textContent = `Current score: ${momentumScore}. My next goal is to hit ${Math.min(99, momentumScore + 8)} by Sunday. Who's in?`;
+            const shareGain = document.getElementById('shareGain');
+            const shareMessage = document.getElementById('shareMessage');
+            if (shareGain) shareGain.textContent = `+${gain}%`;
+            if (shareMessage) {
+                shareMessage.textContent = `Current score: ${momentumScore}. My next goal is to hit ${Math.min(99, momentumScore + 8)} by Sunday. Who is in?`;
+            }
             shareCard.classList.remove('hidden');
             shareCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            launchFloatingReaction('✨');
+            launchFloatingReaction('*');
+        }
+
+        function toChartPoints(values, width, height, padding) {
+            const min = Math.min(...values);
+            const max = Math.max(...values);
+            const range = max - min || 1;
+            return values.map((value, index) => {
+                const x = padding + (index * (width - 2 * padding)) / (values.length - 1);
+                const y = height - padding - ((value - min) / range) * (height - 2 * padding);
+                return { x, y };
+            });
+        }
+
+        function linePath(points) {
+            return points.map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x.toFixed(1)} ${point.y.toFixed(1)}`).join(' ');
+        }
+
+        function areaPath(points, baselineY) {
+            if (!points.length) return '';
+            const head = `M ${points[0].x.toFixed(1)} ${baselineY.toFixed(1)} L ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)}`;
+            const body = points.slice(1).map(point => `L ${point.x.toFixed(1)} ${point.y.toFixed(1)}`).join(' ');
+            const tail = `L ${points[points.length - 1].x.toFixed(1)} ${baselineY.toFixed(1)} Z`;
+            return `${head} ${body} ${tail}`;
+        }
+
+        function renderTrendChart(svgId, values, color) {
+            const svg = document.getElementById(svgId);
+            if (!svg || !Array.isArray(values) || values.length < 2) return;
+            const ns = 'http://www.w3.org/2000/svg';
+            const width = 260;
+            const height = 90;
+            const padding = 8;
+            const baselineY = height - padding;
+            const points = toChartPoints(values, width, height, padding);
+
+            while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+            const baseline = document.createElementNS(ns, 'line');
+            baseline.setAttribute('x1', String(padding));
+            baseline.setAttribute('x2', String(width - padding));
+            baseline.setAttribute('y1', String(baselineY));
+            baseline.setAttribute('y2', String(baselineY));
+            baseline.setAttribute('stroke', '#E7E5E4');
+            baseline.setAttribute('stroke-width', '1');
+            svg.appendChild(baseline);
+
+            const area = document.createElementNS(ns, 'path');
+            area.setAttribute('d', areaPath(points, baselineY));
+            area.setAttribute('fill', color);
+            area.setAttribute('class', 'trend-fill');
+            svg.appendChild(area);
+
+            const path = document.createElementNS(ns, 'path');
+            path.setAttribute('d', linePath(points));
+            path.setAttribute('stroke', color);
+            path.setAttribute('class', 'trend-line');
+            svg.appendChild(path);
+        }
+
+        function updateTrendDeltas() {
+            const recentHeartRate = getRecent(trendSeries.heartRate);
+            const recentSleep = getRecent(trendSeries.sleep);
+            const recentStress = getRecent(trendSeries.stress);
+            const hrDelta = recentHeartRate[recentHeartRate.length - 1] - recentHeartRate[0];
+            const sleepDelta = recentSleep[recentSleep.length - 1] - recentSleep[0];
+            const stressDelta = recentStress[recentStress.length - 1] - recentStress[0];
+
+            const hrEl = document.getElementById('hrTrendDelta');
+            const sleepEl = document.getElementById('sleepTrendDelta');
+            const stressEl = document.getElementById('stressTrendDelta');
+
+            if (hrEl) hrEl.textContent = `${hrDelta >= 0 ? '+' : ''}${Math.round(hrDelta)} bpm`;
+            if (sleepEl) sleepEl.textContent = `${sleepDelta >= 0 ? '+' : ''}${sleepDelta.toFixed(1)} hr`;
+            if (stressEl) stressEl.textContent = `${stressDelta >= 0 ? '+' : ''}${Math.round(stressDelta)} pts`;
+        }
+
+        function renderTrendCharts() {
+            renderTrendChart('trendHeartRate', getRecent(trendSeries.heartRate), '#ef4444');
+            renderTrendChart('trendSleep', getRecent(trendSeries.sleep), '#3b82f6');
+            renderTrendChart('trendStress', getRecent(trendSeries.stress), '#f59e0b');
+            updateTrendDeltas();
+        }
+
+        function enableKeyboardAgentNodes() {
+            const nodeAgentMap = {
+                'node-signal': 'signal',
+                'node-modeling': 'modeling',
+                'node-interpretation': 'interpretation',
+                'node-feedback': 'feedback',
+                'node-safety': 'safety'
+            };
+
+            Object.entries(nodeAgentMap).forEach(([nodeId, agentId]) => {
+                const node = document.getElementById(nodeId);
+                if (!node) return;
+
+                node.setAttribute('tabindex', '0');
+                node.setAttribute('role', 'button');
+                node.setAttribute('aria-label', `Select ${agentId} agent`);
+                node.addEventListener('keydown', event => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        selectAgent(agentId);
+                    }
+                });
+            });
         }
 
 
         // Select agent
         function selectAgent(agentId) {
-            // Remove active from all
             document.querySelectorAll('.agent-card').forEach(card => card.classList.remove('active'));
             document.querySelectorAll('.connection-line').forEach(line => line.classList.remove('active'));
+            document.querySelectorAll('g[id^="node-"] rect').forEach(rect => rect.setAttribute('stroke', '#E7E5E4'));
 
-            // Activate selected
-            const card = document.getElementById('agent-' + agentId);
-            const node = document.getElementById('node-' + agentId);
+            const card = document.getElementById(`agent-${agentId}`);
+            const nodeRect = document.querySelector(`#node-${agentId} rect`);
             if (card) card.classList.add('active');
+            if (nodeRect) nodeRect.setAttribute('stroke', '#D97706');
 
-            // Update memory details
-            document.getElementById('memoryDetails').innerHTML = agentMemories[agentId] || 'Select an agent';
-
-            // Animate connection lines
+            const memoryDetails = document.getElementById('memoryDetails');
+            let memoryText = agentMemories[agentId] || 'Select an agent';
+            if (agentId === 'modeling') {
+                const baselines = getBaselines();
+                memoryText = `User Modeling: 30-day HR baseline ${Math.round(baselines.heartRate)}bpm | 7-day sleep avg ${baselines.sleep.toFixed(1)}h | Preference: Morning workouts.`;
+            }
+            if (memoryDetails) memoryDetails.textContent = memoryText;
             animateConnections(agentId);
         }
 
@@ -712,60 +1138,141 @@
             const lines = lineMap[agentId] || [];
             lines.forEach((lineId, index) => {
                 setTimeout(() => {
-                    document.getElementById(lineId).classList.add('active');
-                }, index * 200);
+                    const line = document.getElementById(lineId);
+                    if (line) line.classList.add('active');
+                }, index * 180);
             });
+        }
+
+        function resetPipelineTimeline() {
+            agentSequence.forEach(stepId => {
+                const step = document.getElementById(`step-${stepId}`);
+                const latency = document.getElementById(`latency-${stepId}`);
+                if (step) step.classList.remove('active', 'completed');
+                if (latency) latency.textContent = 'pending';
+            });
+            const pipelineDuration = document.getElementById('pipelineDuration');
+            if (pipelineDuration) pipelineDuration.textContent = '0.00s total';
+        }
+
+        function markPipelineStep(stepId, state, durationMs) {
+            const step = document.getElementById(`step-${stepId}`);
+            const latency = document.getElementById(`latency-${stepId}`);
+            if (!step) return;
+
+            step.classList.remove('active', 'completed');
+            if (state === 'active') {
+                step.classList.add('active');
+                if (latency) latency.textContent = 'running';
+                return;
+            }
+
+            if (state === 'completed') {
+                step.classList.add('completed');
+                if (latency && typeof durationMs === 'number') {
+                    latency.textContent = `${Math.round(durationMs)} ms`;
+                }
+            }
         }
 
         // Toggle visualization
         function toggleViz() {
-            const viz = document.getElementById('agentViz');
-            viz.classList.toggle('hidden');
+            const vizContent = document.getElementById('agentVizContent');
+            const toggleButton = document.getElementById('vizToggleButton');
+            if (!vizContent || !toggleButton) return;
+
+            const hidden = vizContent.classList.toggle('hidden');
+            toggleButton.textContent = hidden ? 'Show View' : 'Hide View';
+            toggleButton.setAttribute('aria-expanded', String(!hidden));
+        }
+
+        function setResponseText(message, color) {
+            const responseContent = document.getElementById('responseContent');
+            if (!responseContent) return;
+            responseContent.textContent = message;
+            responseContent.style.color = color || '#1C1917';
+        }
+
+        function clearResponseMetadata() {
+            const metadata = document.getElementById('responseMetadata');
+            if (metadata) metadata.textContent = '';
+        }
+
+        function addMetadataItem(container, label, value) {
+            const span = document.createElement('span');
+            span.textContent = `${label}: ${value}`;
+            container.appendChild(span);
+        }
+
+        function renderResponseMetadata(model, tokenCount, durationNs) {
+            const metadata = document.getElementById('responseMetadata');
+            if (!metadata) return;
+            metadata.textContent = '';
+            addMetadataItem(metadata, 'Model', model);
+            addMetadataItem(metadata, 'Tokens', tokenCount ?? 'N/A');
+            const duration = typeof durationNs === 'number' ? `${(durationNs / 1000000000).toFixed(2)}s` : 'N/A';
+            addMetadataItem(metadata, 'Duration', duration);
         }
 
         // Process request with Ollama
         async function processRequest() {
-            const input = document.getElementById('userInput').value.trim();
+            const inputEl = document.getElementById('userInput');
+            const responseArea = document.getElementById('responseArea');
+            const sendButton = document.getElementById('sendButton');
+            const modelSelect = document.getElementById('modelSelect');
+            if (!inputEl) return;
+
+            const input = inputEl.value.trim();
             if (!input || isProcessing) return;
 
+            const selectedModel = modelSelect ? modelSelect.value : 'llama3.2';
             isProcessing = true;
-
-            // Show processing state
-            const responseArea = document.getElementById('responseArea');
-            const responseContent = document.getElementById('responseContent');
-            const responseMetadata = document.getElementById('responseMetadata');
-
-            responseArea.classList.remove('hidden');
-            responseContent.innerHTML = '<span style="color: #A8A29E;">Processing your request...</span>';
-            responseMetadata.innerHTML = '';
-
-            // Animate agents
-            const agentSequence = ['signal', 'modeling', 'interpretation', 'feedback', 'safety'];
-
-            for (let i = 0; i < agentSequence.length; i++) {
-                const agent = agentSequence[i];
-                selectAgent(agent);
-
-                // Update memory bars progressively
-                const progress = ((i + 1) / agentSequence.length) * 100;
-                document.getElementById('workingMemBar').style.width = progress + '%';
-                document.getElementById('workingMemValue').textContent = Math.round(progress) + '%';
-
-                await new Promise(r => setTimeout(r, 400));
+            if (sendButton) {
+                sendButton.disabled = true;
+                sendButton.classList.add('opacity-60', 'cursor-not-allowed');
             }
 
-            // Call Ollama
+            if (responseArea) responseArea.classList.remove('hidden');
+            setResponseText('Processing your request...', '#78716C');
+            clearResponseMetadata();
+            resetPipelineTimeline();
+
+            const pipelineStart = performance.now();
+            let timeoutId;
+
             try {
+                for (let i = 0; i < agentSequence.length; i++) {
+                    const agentId = agentSequence[i];
+                    const stepStart = performance.now();
+                    markPipelineStep(agentId, 'active');
+                    selectAgent(agentId);
+
+                    const progress = ((i + 1) / agentSequence.length) * 100;
+                    const workingMemBar = document.getElementById('workingMemBar');
+                    const workingMemValue = document.getElementById('workingMemValue');
+                    if (workingMemBar) workingMemBar.style.width = `${progress}%`;
+                    if (workingMemValue) workingMemValue.textContent = `${Math.round(progress)}%`;
+
+                    await sleep(300);
+                    markPipelineStep(agentId, 'completed', performance.now() - stepStart);
+                }
+
+                const controller = new AbortController();
+                timeoutId = setTimeout(() => controller.abort(), 30000);
+                const baselines = getBaselines();
+                const baselineLine = `- Current baselines: HR ${Math.round(baselines.heartRate)}bpm, Sleep ${baselines.sleep.toFixed(1)}h/night`;
+
                 const response = await fetch('http://localhost:11434/api/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
+                    signal: controller.signal,
                     body: JSON.stringify({
-                        model: 'llama3.2',
+                        model: selectedModel,
                         prompt: `You are VitalSync, a local wellness AI assistant. The user said: "${input}".
 
 The system context includes:
 - User has been tracking heart rate, sleep, workouts, and stress
-- Current baselines: HR 68bpm, Sleep 6.2h/night
+${baselineLine}
 - User prefers supportive, informative tone
 - Safety constraints: No medical advice, factual verification required
 
@@ -774,31 +1281,34 @@ Respond helpfully about wellness in a supportive, informative manner. If the use
                     })
                 });
 
+                if (!response.ok) {
+                    const errorBody = await response.text();
+                    throw new Error(`Local model request failed (${response.status}). ${errorBody.slice(0, 160)}`);
+                }
+
                 const data = await response.json();
+                if (!data || typeof data.response !== 'string') {
+                    throw new Error('Local model returned an unexpected payload.');
+                }
 
-                // Display response
-                responseContent.innerHTML = formatResponse(data.response);
-                responseMetadata.innerHTML = `
-                    <span>Model: llama3.2</span>
-                    <span>Tokens: ${data.eval_count || 'N/A'}</span>
-                    <span>Duration: ${(data.eval_duration / 1000000000).toFixed(2)}s</span>
-                `;
-
+                setResponseText(data.response, '#1C1917');
+                renderResponseMetadata(selectedModel, data.eval_count, data.eval_duration);
             } catch (error) {
-                responseContent.innerHTML = `<span style="color: #ef4444;">Error connecting to Ollama: ${error.message}</span>
-                <br><br>
-                <em>Make sure Ollama is running with: ollama run llama3.2</em>`;
+                const errorMessage = error && error.name === 'AbortError'
+                    ? 'Request timed out. Verify Ollama is running and the selected model is available.'
+                    : `Unable to connect to local Ollama. ${error.message}`;
+                setResponseText(`${errorMessage}\n\nRun: ollama run ${selectedModel}`, '#b91c1c');
+            } finally {
+                if (timeoutId) clearTimeout(timeoutId);
+                const durationEl = document.getElementById('pipelineDuration');
+                if (durationEl) durationEl.textContent = `${((performance.now() - pipelineStart) / 1000).toFixed(2)}s total`;
+
+                isProcessing = false;
+                if (sendButton) {
+                    sendButton.disabled = false;
+                    sendButton.classList.remove('opacity-60', 'cursor-not-allowed');
+                }
             }
-
-            isProcessing = false;
-        }
-
-        function formatResponse(text) {
-            // Simple markdown-like formatting
-            return text
-                .replace(/\n\n/g, '<br><br>')
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                .replace(/\*(.*?)\*/g, '<em>$1</em>');
         }
 
         // Enter key to submit
@@ -812,7 +1322,18 @@ Respond helpfully about wellness in a supportive, informative manner. If the use
         // Initialize
         renderChallenges();
         updateMomentumUI();
+        if (!loadStoredMetrics()) saveStoredMetrics();
+        renderTrendCharts();
         refreshGreeting();
+        resetPipelineTimeline();
+        enableKeyboardAgentNodes();
+        selectAgent('signal');
+        const attachDataButton = document.getElementById('attachDataButton');
+        const metricsFileInput = document.getElementById('metricsFileInput');
+        if (attachDataButton) attachDataButton.addEventListener('click', openMetricsImportDialog);
+        if (metricsFileInput) metricsFileInput.addEventListener('change', handleMetricsImport);
+        window.addEventListener('vitalsync-metric', handleMetricBridgeEvent);
+        connectMetricBridge();
         console.log('VitalSync initialized with momentum engine');
     </script>
 </body>
