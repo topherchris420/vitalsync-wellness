@@ -22,7 +22,8 @@ import time
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from queue import Empty, Queue
-from typing import Any, Dict, Iterable, List
+from collections.abc import Iterable
+from typing import Any
 
 
 ALLOWED_METRICS = {"heartRate", "sleep", "stress"}
@@ -40,7 +41,7 @@ def clamp(metric: str, value: float) -> float:
     return value
 
 
-def normalize_sample(metric: Any, value: Any) -> Dict[str, Any] | None:
+def normalize_sample(metric: Any, value: Any) -> dict[str, Any] | None:
     if metric not in ALLOWED_METRICS:
         return None
     try:
@@ -55,7 +56,7 @@ def normalize_sample(metric: Any, value: Any) -> Dict[str, Any] | None:
     return {"metric": metric, "value": bounded}
 
 
-def extract_samples(payload: Any) -> List[Dict[str, Any]]:
+def extract_samples(payload: Any) -> list[dict[str, Any]]:
     if isinstance(payload, dict) and "metric" in payload and "value" in payload:
         sample = normalize_sample(payload["metric"], payload["value"])
         return [sample] if sample else []
@@ -64,7 +65,7 @@ def extract_samples(payload: Any) -> List[Dict[str, Any]]:
         return extract_samples(payload["samples"])
 
     if isinstance(payload, list):
-        normalized: List[Dict[str, Any]] = []
+        normalized: list[dict[str, Any]] = []
         for item in payload:
             if isinstance(item, dict) and "metric" in item and "value" in item:
                 sample = normalize_sample(item["metric"], item["value"])
@@ -75,13 +76,13 @@ def extract_samples(payload: Any) -> List[Dict[str, Any]]:
     return []
 
 
-def broadcast_samples(samples: Iterable[Dict[str, Any]]) -> None:
+def broadcast_samples(samples: Iterable[dict[str, Any]]) -> None:
     payload = {"samples": list(samples), "timestamp": time.time()}
     if not payload["samples"]:
         return
 
     serialized = json.dumps(payload, separators=(",", ":"))
-    stale: List[Queue[str]] = []
+    stale: list[Queue[str]] = []
     with SUBSCRIBERS_LOCK:
         for queue in list(SUBSCRIBERS):
             try:
@@ -100,7 +101,7 @@ class BridgeRequestHandler(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
 
-    def _send_json(self, status: int, payload: Dict[str, Any]) -> None:
+    def _send_json(self, status: int, payload: dict[str, Any]) -> None:
         body = json.dumps(payload).encode("utf-8")
         self.send_response(status)
         self._set_common_headers()
@@ -228,12 +229,13 @@ def main() -> None:
     args = parse_args()
     server = ThreadingHTTPServer((args.host, args.port), BridgeRequestHandler)
     stop_event = threading.Event()
+    interval = max(0.2, args.interval)
 
     demo_thread: threading.Thread | None = None
     if not args.no_demo:
         demo_thread = threading.Thread(
             target=run_demo_loop,
-            args=(stop_event, max(0.2, args.interval)),
+            args=(stop_event, interval),
             daemon=True,
         )
         demo_thread.start()
@@ -243,7 +245,7 @@ def main() -> None:
     if args.no_demo:
         print("[bridge] Demo stream disabled")
     else:
-        print(f"[bridge] Demo stream enabled at {max(0.2, args.interval):.2f}s interval")
+        print(f"[bridge] Demo stream enabled at {interval:.2f}s interval")
 
     try:
         server.serve_forever(poll_interval=0.5)

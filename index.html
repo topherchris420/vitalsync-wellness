@@ -889,10 +889,14 @@
             { id: "breathe", title: "Stress Reset", detail: "Complete a 4-minute breathing drill", points: 9 }
         ];
 
+        const DEFAULT_HEART_RATE = [66, 67, 69, 71, 70, 68, 67];
+        const DEFAULT_SLEEP = [5.9, 6.1, 6.0, 6.2, 6.5, 6.4, 6.6];
+        const DEFAULT_STRESS = [58, 56, 60, 54, 52, 49, 47];
+
         let trendSeries = {
-            heartRate: [66, 67, 69, 71, 70, 68, 67],
-            sleep: [5.9, 6.1, 6.0, 6.2, 6.5, 6.4, 6.6],
-            stress: [58, 56, 60, 54, 52, 49, 47]
+            heartRate: DEFAULT_HEART_RATE.slice(),
+            sleep: DEFAULT_SLEEP.slice(),
+            stress: DEFAULT_STRESS.slice()
         };
 
         const shareState = {
@@ -933,9 +937,9 @@
 
         function buildNormalizedSeries(raw) {
             return {
-                heartRate: normalizeNumericSeries(raw && raw.heartRate, [66, 67, 69, 71, 70, 68, 67], 35, 210),
-                sleep: normalizeNumericSeries(raw && raw.sleep, [5.9, 6.1, 6.0, 6.2, 6.5, 6.4, 6.6], 0, 16),
-                stress: normalizeNumericSeries(raw && raw.stress, [58, 56, 60, 54, 52, 49, 47], 0, 100)
+                heartRate: normalizeNumericSeries(raw && raw.heartRate, DEFAULT_HEART_RATE, 35, 210),
+                sleep: normalizeNumericSeries(raw && raw.sleep, DEFAULT_SLEEP, 0, 16),
+                stress: normalizeNumericSeries(raw && raw.stress, DEFAULT_STRESS, 0, 100)
             };
         }
 
@@ -1190,19 +1194,41 @@
             selectAgent(action === 'challenge' ? 'feedback' : 'interpretation');
         }
 
-
         function renderChallenges() {
             const challengeGrid = document.getElementById('challengeGrid');
             if (!challengeGrid) return;
-            challengeGrid.innerHTML = dailyChallenges.map(challenge => `
-                <button type="button" class="challenge-card text-left" onclick="completeChallenge('${challenge.id}')">
-                    <div class="flex items-center justify-between mb-1">
-                        <p class="font-medium" style="color:#1C1917;">${challenge.title}</p>
-                        <span class="text-xs px-2 py-1 rounded-full" style="background:rgba(217,119,6,.12); color:#92400E;">+${challenge.points}</span>
-                    </div>
-                    <p class="text-xs" style="color:#78716C;">${challenge.detail}</p>
-                </button>
-            `).join('');
+            challengeGrid.textContent = '';
+            dailyChallenges.forEach(challenge => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'challenge-card text-left';
+                btn.addEventListener('click', () => completeChallenge(challenge.id));
+
+                const row = document.createElement('div');
+                row.className = 'flex items-center justify-between mb-1';
+
+                const title = document.createElement('p');
+                title.className = 'font-medium';
+                title.style.color = '#1C1917';
+                title.textContent = challenge.title;
+
+                const badge = document.createElement('span');
+                badge.className = 'text-xs px-2 py-1 rounded-full';
+                badge.style.cssText = 'background:rgba(217,119,6,.12); color:#92400E;';
+                badge.textContent = `+${challenge.points}`;
+
+                row.appendChild(title);
+                row.appendChild(badge);
+
+                const detail = document.createElement('p');
+                detail.className = 'text-xs';
+                detail.style.color = '#78716C';
+                detail.textContent = challenge.detail;
+
+                btn.appendChild(row);
+                btn.appendChild(detail);
+                challengeGrid.appendChild(btn);
+            });
         }
 
         function completeChallenge(challengeId) {
@@ -1438,7 +1464,6 @@
         }
 
         function toChartPoints(values, width, height, padding) {
-
             const min = Math.min(...values);
             const max = Math.max(...values);
             const range = max - min || 1;
@@ -1543,7 +1568,6 @@
                 });
             });
         }
-
 
         // Select agent
         function selectAgent(agentId) {
