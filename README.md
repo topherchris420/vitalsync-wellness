@@ -70,7 +70,7 @@ window.dispatchEvent(new CustomEvent('vitalsync-metric', {
 
 ### Local Streaming Bridge
 
-The page now auto-connects to `http://127.0.0.1:8765/events` via SSE.
+Use the Connect local metric bridge button in the UI to connect to `http://127.0.0.1:8765/events` via SSE.
 
 Run the included bridge:
 
